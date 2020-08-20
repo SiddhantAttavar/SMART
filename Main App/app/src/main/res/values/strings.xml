@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Stroke App</string>
+
+    <!-- App related strings -->
+    <string name="test">Tests</string>
+    <string name="rehabilitation">Rehabilitation</string>
+    <string name="results">Results</string>
+
+    <!-- Test related strings -->
+    <string name="facial_droop">Facial Droop</string>
+    <string name="arm_weakness">Arm weakness</string>
+    <string name="eeg">EEG</string>
+    <string name="capture">Capture Image</string>
+    <string name="arm_weakness_instructions">Arm weakness instructions</string>
+    <string name="facial_droop_instructions">Facial droop instructions</string>
+    <string name="results_prompt">Results: \nStroke probability: %1$f</string>
+
+    <!-- Rehabilitation related strings -->
+    <string name="eeg_training">EEG Training</string>
+    <string name="motor_training">Motor Training</string>
+    <string name="game_fragment_text">Game fragment</string>
+    <string name="play">play/pause</string>
+
+    <!-- Muse and EEG related strings -->
+    <string name="refresh">Refresh</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="permission_dialog_title">Muse Needs Your Permission</string>
+    <string name="permission_dialog_description">Muse needs a few permissions to work properly. On the next screens, tap "Allow" to proceed. If you deny, Muse will not work properly until you go into your Android settings and allow.</string>
+    <string name="permission_dialog_understand">I Understand</string>
+
+    <!-- EEG Game related strings -->
+</resources>

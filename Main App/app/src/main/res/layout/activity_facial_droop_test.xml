@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tests.FacialDroopTest"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription">
+
+    <TextView
+        style="@style/StandardFormatting"
+        android:layout_weight="1"
+        android:text="@string/facial_droop"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        style="@style/StandardFormatting"
+        android:layout_weight="2"
+        android:text="@string/facial_droop_instructions"
+        android:textSize="15sp"
+        android:gravity="start"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:padding="8dp"/>
+
+    <fragment
+        android:id="@+id/tensorflow_fragment"
+        style="@style/StandardFormatting"
+        android:layout_weight="3"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:name="com.example.strokeapp.TensorflowModelFragment"/>
+
+    <Button
+        style="@style/StandardFormatting"
+        android:layout_weight="1"
+        android:text="@string/capture"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="captureImage"/>
+
+    <TextView
+        android:id="@+id/results"
+        style="@style/StandardFormatting"
+        android:layout_weight="1"
+        android:text="@string/results_prompt"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>
