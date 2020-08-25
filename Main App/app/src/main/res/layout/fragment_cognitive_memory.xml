@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TitleFormatting"
+        android:text="@string/memory"/>
+
+    <TextView
+        android:id="@+id/memory_option_4"
+        style="@style/StandardFormatting"
+        android:text="@string/memory_question" />
+
+    <TextView
+        android:id="@+id/memory_instructions"
+        style="@style/StandardFormatting"
+        android:text="@string/memory_option_1"/>
+
+    <TextView
+        android:id="@+id/memory_option_1"
+        style="@style/StandardFormatting"
+        android:text="@string/memory_option_2"/>
+
+    <TextView
+        android:id="@+id/memory_option_2"
+        style="@style/StandardFormatting"
+        android:text="@string/memory_option_3"/>
+
+    <EditText
+        android:id="@+id/answer_edit_text"
+        style="@style/StandardFormatting"
+        android:visibility="invisible"
+        android:hint="@string/memory_instructions"
+        android:autofillHints=""
+        android:inputType="text" />
+</LinearLayout>

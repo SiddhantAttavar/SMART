@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        style="@style/TitleFormatting"
+        android:text="@string/cognitive_training"/>
+
+    <Button
+        android:id="@+id/memory"
+        style="@style/StandardFormatting"
+        android:text="@string/memory" />
+
+    <Button
+        android:id="@+id/language"
+        style="@style/StandardFormatting"
+        android:text="@string/language" />
+
+    <Button
+        android:id="@+id/mental_aptitude"
+        style="@style/StandardFormatting"
+        android:layout_marginBottom="16dp"
+        android:text="@string/mental_aptitude" />
+</LinearLayout>
