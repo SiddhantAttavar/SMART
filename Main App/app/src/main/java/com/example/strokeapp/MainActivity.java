@@ -1,14 +1,16 @@
 package com.example.strokeapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.strokeapp.rehabilitation.Rehabilitation;
 import com.example.strokeapp.results.Results;
 import com.example.strokeapp.tests.Tests;
+
+import ai.fritz.core.Fritz;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Fritz.configure(this, "486c39c85612487d8f7eaac8d40c96a3");
     }
 
     /**

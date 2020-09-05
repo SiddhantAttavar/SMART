@@ -8,19 +8,22 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.strokeapp.EEGProcessor;
 import com.example.strokeapp.GameLogic;
 import com.example.strokeapp.MuseFragment;
 import com.example.strokeapp.R;
 
 public class EEGTraining extends FragmentActivity {
 
-    private MuseFragment museFragment;
+    private EEGProcessor eegProcessor;
     private EEGGame eegGame;
     private ImageButton playButton;
+    private Button connectButton;
 
     private boolean isPlaying = true;
 
@@ -28,9 +31,10 @@ public class EEGTraining extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eeg_training);
-        museFragment = (MuseFragment) getSupportFragmentManager().findFragmentById(R.id.muse_fragment);
         eegGame = findViewById(R.id.game);
         playButton = findViewById(R.id.pause_button);
+        connectButton = findViewById(R.id.connect_button);
+        //eegProcessor = new EEGProcessor(this, connectButton);
     }
 
     @Override
@@ -59,16 +63,7 @@ public class EEGTraining extends FragmentActivity {
             playButton.setImageDrawable(getResources().getDrawable(R.drawable.play));
         }
         eegGame.pause();
-        museFragment.pause(isPlaying);
         isPlaying = !isPlaying;
-    }
-
-    public void refresh(View view) {
-        museFragment.refresh();
-    }
-
-    public void connect(View view) {
-        museFragment.connect();
     }
 }
 

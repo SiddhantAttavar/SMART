@@ -15,53 +15,63 @@ import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.UUID;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused", "RedundantSuppression", "SpellCheckingInspection"})
 public class EEGProcessor {
 
+    //Bluetooth connectivity related variables
     private final UUID BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final String BT_MAC = "98:D3:31:F9:86:38";
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private InputStream inputStream;
-    private Scanner scanner;
     private boolean deviceConnected = false;
+
+    private Thread thread;
     private boolean runThread;
     private Activity activity;
     private Button connectButton;
-    private double[] rawData;
     private final int REQUEST_ENABLE_BT = 1000;
+    private Runnable analyseResults;
 
     private EEGBand[] eegBands;
     private FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
     private double[] frequencies, amplitudes;
     private double freqDiff;
-    private final int sampleFreq = 256;
+    private final int sampleFreq = 64;
+    private final int samplingTime = 4;
     private int fftLength;
     private boolean runRealTime;
-    private int pointerPos = 0;
 
-    public static EEGBand DELTA = new EEGBand(0f, 3.5f, "Delta");
+    public boolean test = false;
+
+    public static EEGBand DELTA = new EEGBand(1f, 4f, "Delta");
     public static EEGBand THETA = new EEGBand(4f, 8f, "Theta");
     public static EEGBand ALPHA = new EEGBand(8f, 13f, "Alpha");
     public static EEGBand BETA = new EEGBand(13f, 30f, "Beta");
 
-    public EEGProcessor(Activity activity, Button connectButton, EEGBand[] eegBands, boolean runRealTime) {
+    public EEGProcessor(Activity activity, Button connectButton, boolean runRealTime, Runnable analyseResults, EEGBand[] eegBands) {
         this.activity = activity;
         this.connectButton = connectButton;
-        this.connectButton.setOnClickListener((View view) -> connect());
         this.runRealTime = runRealTime;
         this.eegBands = eegBands;
+        this.analyseResults = analyseResults;
+
+        this.connectButton.setText(R.string.connect);
+        this.connectButton.setOnClickListener((View view) -> connect());
 
         Arrays.sort(this.eegBands);
+
         if (runRealTime) {
-            fftLength = 64;
+            fftLength = sampleFreq * samplingTime;
             freqDiff = (double) sampleFreq / fftLength;
         }
     }
@@ -69,19 +79,13 @@ public class EEGProcessor {
     private boolean BTinit() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            Toast.makeText(activity,"Device doesnt Support Bluetooth",Toast.LENGTH_SHORT).show();
+            activity.runOnUiThread(() -> Toast.makeText(activity,"Device doesnt Support Bluetooth",Toast.LENGTH_SHORT).show());
             return false;
         }
 
         if(!bluetoothAdapter.isEnabled()) {
             Intent enableAdapter = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             activity.startActivityForResult(enableAdapter, REQUEST_ENABLE_BT);
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         device = bluetoothAdapter.getRemoteDevice(BT_MAC);
@@ -93,7 +97,6 @@ public class EEGProcessor {
             socket = device.createInsecureRfcommSocketToServiceRecord(BT_UUID);
             socket.connect();
             inputStream = socket.getInputStream();
-            scanner = new Scanner(inputStream);
             activity.runOnUiThread(() -> {
                 Toast.makeText(activity, "Device connected", Toast.LENGTH_SHORT).show();
                 activity.runOnUiThread(() -> connectButton.setText(R.string.disconnect));
@@ -106,72 +109,142 @@ public class EEGProcessor {
         }
     }
 
-    private void connect() {
+    public void onPause() {
         if (deviceConnected) {
-            runThread = false;
+          runThread = false;
             try {
-                scanner.close();
-                socket.close();
+                if (socket != null) {
+                    socket.close();
+                }
                 deviceConnected = false;
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void connect() {
+        if (deviceConnected) {
+            runThread = false;
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             connectButton.setText(R.string.connect);
         }
         else {
-            new Thread(() -> {
-                if (BTinit() && BTconnect()) {
+            thread = new Thread(() -> {
+                if (test || (BTinit() && BTconnect())) {
                     deviceConnected = true;
-                    beginListenForData();
+                    listenForData();
                 }
-            }).start();
+            });
+            thread.start();
         }
     }
 
-    private void beginListenForData() {
+    private void listenForData() {
         runThread = true;
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        while (!Thread.currentThread().isInterrupted() && runThread) {
-            try {
-                double sensorValue = Double.parseDouble(br.readLine());
-                rawData[pointerPos] = sensorValue;
-                pointerPos++;
-                if (pointerPos == fftLength) {
-                    processData(rawData);
-                    calculateBandPowers();
-                    pointerPos = 0;
+        try {
+            Scanner scanner = new Scanner(activity.getAssets().open("EEG Sample Data.txt"));
+            if (runRealTime) {
+                double[] rawData = new double[fftLength];
+                while (!Thread.currentThread().isInterrupted() && runThread) {
+                    try {
+                        double sensorValue = scanner.nextDouble();
+                        insertAtEnd(rawData, sensorValue);
+                        processData(rawData);
+                        calculateBandPowers();
+                        analyseResults.run();
+                    }
+                    catch (NoSuchElementException e) {
+                        if (test) {
+                            break;
+                        }
+                    }
                 }
             }
-            catch (IOException e) {
-                break;
+            else {
+                List<Double> rawData = new ArrayList<>();
+                while (!Thread.currentThread().isInterrupted() && runThread) {
+                    try {
+                        double sensorValue = scanner.nextDouble();
+                        rawData.add(sensorValue);
+                    }
+                    catch (NoSuchElementException e) {
+                        if (test) {
+                            break;
+                        }
+                    }
+                }
+                fftLength = 1;
+                while (fftLength < rawData.size()) {
+                    fftLength *= 2;
+                }
+                freqDiff = (double) sampleFreq / fftLength;
+                double[] finalRawData = zeroPadData(getArr(rawData), fftLength);
+                processData(finalRawData);
+                calculateBandPowers();
+                analyseResults.run();
             }
+            scanner.close();
         }
-        activity.runOnUiThread(() -> Toast.makeText(activity, "Exiting thread", Toast.LENGTH_SHORT).show());
+        catch (IOException e) {
+            Log.i("EEGProcessor", "File not found");
+        }
+    }
+
+    private double[] getArr(List<Double> list) {
+        double[] temp = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            temp[i] = list.get(i);
+        }
+        return temp;
     }
 
     private void processData(double[] data) {
+        if (data.length < fftLength) {
+            data = zeroPadData(data, fftLength);
+        }
+        frequencies = new double[fftLength];
+        amplitudes = new double[fftLength];
         Complex[] fftResults = fft.transform(data, TransformType.FORWARD);
         for (int i = 0; i < fftResults.length; i++) {
             Complex complex = fftResults[i];
             double a = complex.getReal(), b = complex.getImaginary();
             amplitudes[i] = Math.sqrt(a * a + b * b);
-            frequencies[i] = (double) i * sampleFreq / fftLength;
+            frequencies[i] = i * freqDiff;
         }
     }
 
     private void calculateBandPowers() {
-        int eegBandCount = 0;
-        for (int i = 0; i < amplitudes.length - 1; i++) {
-            if (frequencies[i] < eegBands[eegBandCount].high) {
-                Log.i(eegBands[eegBandCount].bandName, String.valueOf(eegBands[eegBandCount].val));
-                eegBandCount++;
-                if (eegBandCount == eegBands.length) {
+        int count = 0;
+        for (int i = 0; i < fftLength / 2; i++) {
+            if (eegBands[count].high < frequencies[i]) {
+                eegBands[count].val /= fftLength;
+                count++;
+                if (count == eegBands.length) {
                     break;
                 }
             }
-            eegBands[eegBandCount].val += (amplitudes[i] + amplitudes[i + 1]) * freqDiff / 2;
+            if (eegBands[count].low <= frequencies[i]) {
+                eegBands[count].val += amplitudes[i];
+            }
         }
+    }
+
+    private double[] zeroPadData(double[] data, int fftLength) {
+        double[] finData = new double[fftLength];
+        System.arraycopy(data, 0, finData, (fftLength - data.length) / 2, data.length);
+        return finData;
+    }
+
+    private void insertAtEnd(double[] array, double value) {
+        System.arraycopy(array, 1, array, 0, array.length - 1);
+        array[array.length - 1] = value;
     }
 
     public static class EEGBand implements Comparable<EEGBand> {
