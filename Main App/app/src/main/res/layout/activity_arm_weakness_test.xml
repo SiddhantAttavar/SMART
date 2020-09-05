@@ -9,35 +9,38 @@
     tools:ignore="ContentDescription">
 
     <TextView
-        style="@style/StandardFormatting"
-        android:layout_weight="1"
-        android:text="@string/arm_weakness"
-        android:gravity="center"
-        android:textSize="25sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        style="@style/TitleFormatting"
+        android:text="@string/facial_droop" />
 
     <TextView
         style="@style/StandardFormatting"
         android:layout_weight="2"
-        android:text="@string/arm_weakness_instructions"
+        android:text="@string/facial_droop_instructions"
         android:textSize="15sp"
         android:gravity="start"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:padding="8dp"/>
 
-    <ImageView
-        android:id="@+id/display_image_view"
+    <fragment
+        android:id="@+id/camera_fragment"
         style="@style/StandardFormatting"
-        android:layout_weight="4"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="3"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/camera"
-        android:scaleX="0.3"
-        android:scaleY="0.3" />
+        android:name="com.example.strokeapp.imageprocessing.CameraFragment"/>
+
+    <Button
+        style="@style/StandardFormatting"
+        android:layout_weight="1"
+        android:text="@string/capture"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="captureImage"/>
 
     <TextView
+        android:id="@+id/results"
         style="@style/StandardFormatting"
         android:layout_weight="1"
         android:text="@string/results_prompt"
@@ -46,5 +49,4 @@
         android:padding="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"/>
-
 </LinearLayout>

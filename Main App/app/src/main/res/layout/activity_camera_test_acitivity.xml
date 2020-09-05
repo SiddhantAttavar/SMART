@@ -5,28 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".rehabilitation.Rehabilitation"
+    tools:context=".imageprocessing.CameraTestAcitivity"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TitleFormatting"
-        android:text="@string/test"/>
-
-    <Button
-        android:id="@+id/eeg_training_button"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_view"
         style="@style/StandardFormatting"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="3"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/eeg_training"
-        android:onClick="goToEEGTraining"/>
+        android:layout_marginBottom="8dp" />
 
     <Button
-        android:id="@+id/motor_training_button"
         style="@style/StandardFormatting"
-        android:layout_weight="3"
+        android:layout_weight="1"
+        android:text="@string/capture"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/motor_training"
-        android:onClick="goToMotorTraining"/>
+        android:onClick="captureImage"/>
+
+    <ImageView
+        android:id="@+id/display_image_view"
+        style="@style/StandardFormatting"
+        android:layout_weight="4"/>
+
 </LinearLayout>

@@ -29,5 +29,13 @@
     <string name="permission_dialog_description">Muse needs a few permissions to work properly. On the next screens, tap "Allow" to proceed. If you deny, Muse will not work properly until you go into your Android settings and allow.</string>
     <string name="permission_dialog_understand">I Understand</string>
 
-    <!-- EEG Game related strings -->
+    <string name="cognitive_training">Cognitive Training</string>
+    <string name="memory">Memory</string>
+    <string name="language">Language</string>
+    <string name="mental_aptitude">Mental Aptitude</string>
+    <string name="memory_question">You have 15 seconds to remember these 3 words:</string>
+    <string name="memory_option_1">Clock</string>
+    <string name="memory_option_2">Apple</string>
+    <string name="memory_option_3">Fish</string>
+    <string name="memory_instructions">Enter the words that you just remembered</string>
 </resources>
