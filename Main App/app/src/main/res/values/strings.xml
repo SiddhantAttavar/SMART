@@ -13,7 +13,7 @@
     <string name="capture">Capture Image</string>
     <string name="arm_weakness_instructions">Arm weakness instructions</string>
     <string name="facial_droop_instructions">Facial droop instructions</string>
-    <string name="results_prompt">Results: \nStroke probability: %1$f</string>
+    <string name="results_prompt">Results: \nStroke probability: %.2f</string>
 
     <!-- Rehabilitation related strings -->
     <string name="eeg_training">EEG Training</string>
@@ -30,12 +30,41 @@
     <string name="permission_dialog_understand">I Understand</string>
 
     <string name="cognitive_training">Cognitive Training</string>
+    <string name="submit">Submit</string>
+    <string name="time_over">Time Up</string>
+    <string name="next">Next</string>
+    <string name="answer_prompt">Please submit your answer</string>
+
     <string name="memory">Memory</string>
     <string name="language">Language</string>
     <string name="mental_aptitude">Mental Aptitude</string>
-    <string name="memory_question">You have 15 seconds to remember these 3 words:</string>
-    <string name="memory_option_1">Clock</string>
-    <string name="memory_option_2">Apple</string>
-    <string name="memory_option_3">Fish</string>
-    <string name="memory_instructions">Enter the words that you just remembered</string>
+
+    <string name="memory_question">You have %d seconds to remember these %d words: %s</string>
+    <string name="memory_wait_instructions">Please wait for %d seconds</string>
+    <string name="memory_instructions">Enter the words that you just\n remembered separated by a comma </string>
+    <string-array name="memory_words">
+        <item>area</item><item>book</item><item>business</item><item>case</item><item>child</item><item>company</item><item>country</item><item>day</item>
+        <item>eye</item><item>fact</item><item>family</item><item>government</item><item>group</item><item>hand</item><item>home</item><item>job</item>
+        <item>life</item><item>lot</item><item>man</item><item>money</item><item>month</item><item>mother</item><item>night</item><item>number</item><item>office</item>
+        <item>part</item><item>people</item><item>place</item><item>point</item><item>problem</item><item>program</item><item>question</item><item>right</item>
+        <item>room</item><item>school</item><item>state</item><item>story</item><item>student</item><item>study</item><item>system</item><item>thing</item>
+        <item>time</item><item>water</item><item>way</item><item>week</item><item>woman</item><item>word</item><item>work</item><item>world</item><item>year</item>
+    </string-array>
+
+    <string-array name="language_questions">
+        <item>Please select the picture which shows a </item>
+        <item>Please select the picture which contains the letter </item>
+    </string-array>
+    <string-array name="language_question_1_options">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+    <string-array name="language_question_2_options">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
 </resources>

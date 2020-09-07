@@ -1,36 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".rehabilitation.CognitiveLanguageVisionFragment"
+    tools:ignore="NestedWeights, InefficientWeight, ContentDescription" >
 
     <TextView
         style="@style/TitleFormatting"
-        android:text="@string/memory"/>
+        android:text="@string/mental_aptitude" />
 
     <TextView
         android:id="@+id/question"
         style="@style/StandardFormatting"
         android:layout_weight="0"
-        android:layout_height="wrap_content"
-        android:text="@string/memory_question" />
+        android:layout_height="wrap_content"/>
 
-    <EditText
-        android:id="@+id/answer"
+    <LinearLayout
         style="@style/StandardFormatting"
-        android:layout_weight="0"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:hint="@string/answer_prompt"
-        android:textSize="20sp"
-        android:autofillHints=""
-        android:inputType="textVisiblePassword" />
+        android:orientation="horizontal">
 
-    <View
-        style="@style/StandardFormatting"/>
+        <ImageButton
+            android:id="@+id/option_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"/>
+
+        <ImageButton
+            android:id="@+id/option_2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/StandardFormatting"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/option_3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/option_4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         style="@style/StandardFormatting"
