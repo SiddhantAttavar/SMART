@@ -1,12 +1,12 @@
 package com.example.strokeapp.results;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.strokeapp.EEGProcessor;
 import com.example.strokeapp.R;
@@ -29,19 +29,16 @@ public class Results extends AppCompatActivity {
 
     public void completeTest(View view) {
         EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-                EEGProcessor.ALPHA,
-                EEGProcessor.BETA,
-                EEGProcessor.THETA,
-                EEGProcessor.DELTA
+                new EEGProcessor.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
+                new EEGProcessor.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
+                new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
+                new EEGProcessor.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
         };
-        for (EEGProcessor.EEGBand eegBand: eegBands) {
-            eegBand.val = 0;
-        }
 
         results.setText("Complete Test: \n");
-        eegProcessor = new EEGProcessor(this, connectButton, false, () -> {
+        eegProcessor = new EEGProcessor(this, connectButton, true, () -> {
             for (EEGProcessor.EEGBand eegBand: eegBands) {
-                Results.this.runOnUiThread(() -> results.append(String.format("%s: %.2f\n", eegBand.bandName, eegBand.val)));
+                Results.this.runOnUiThread(() -> results.append(String.format("%s Relative: %.2f\n", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand))));
             }
         }, eegBands);
         eegProcessor.test = true;
@@ -49,21 +46,18 @@ public class Results extends AppCompatActivity {
 
     public void realTimeTest(View view) {
         EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-                EEGProcessor.ALPHA,
-                EEGProcessor.BETA,
-                EEGProcessor.THETA,
-                EEGProcessor.DELTA
+                new EEGProcessor.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
+                new EEGProcessor.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
+                new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
+                new EEGProcessor.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
         };
-        for (EEGProcessor.EEGBand eegBand: eegBands) {
-            eegBand.val = 0;
-        }
 
         results.setText("Real Time Test: \n");
         eegProcessor = new EEGProcessor(this, connectButton, true, () -> {
             count++;
             if (count == 1024) {
                 for (EEGProcessor.EEGBand eegBand: eegBands) {
-                    Results.this.runOnUiThread(() -> results.append(String.format("%s: %.2f\n", eegBand.bandName, eegBand.val)));
+                    Results.this.runOnUiThread(() -> results.append(String.format("%s Relative: %.2f\n", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand))));
                 }
             }
         }, eegBands);

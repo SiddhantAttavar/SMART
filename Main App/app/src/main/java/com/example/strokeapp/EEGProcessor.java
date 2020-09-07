@@ -53,10 +53,13 @@ public class EEGProcessor {
 
     public boolean test = false;
 
-    public static EEGBand DELTA = new EEGBand(1f, 4f, "Delta");
-    public static EEGBand THETA = new EEGBand(4f, 8f, "Theta");
-    public static EEGBand ALPHA = new EEGBand(8f, 13f, "Alpha");
-    public static EEGBand BETA = new EEGBand(13f, 30f, "Beta");
+    public static final float LOW_PASS = 1f, HIGH_PASS = 30f;
+    public static final float DELTA_LOW = 1f, DELTA_HIGH = 4f;
+    public static final float THETA_LOW = 4f, THETA_HIGH = 8f;
+    public static final float ALPHA_LOW = 8f, ALPHA_HIGH = 13f;
+    public static final float BETA_LOW = 13f, BETA_HIGH = 30f;
+
+    private EEGBand TOTAL = new EEGBand(LOW_PASS, HIGH_PASS, "Total");
 
     public EEGProcessor(Activity activity, Button connectButton, boolean runRealTime, Runnable analyseResults, EEGBand[] eegBands) {
         this.activity = activity;
@@ -222,9 +225,12 @@ public class EEGProcessor {
 
     private void calculateBandPowers() {
         int count = 0;
+        TOTAL.val = 0;
+        for (EEGBand eegBand: eegBands) {
+            eegBand.val = 0;
+        }
         for (int i = 0; i < fftLength / 2; i++) {
             if (eegBands[count].high < frequencies[i]) {
-                eegBands[count].val /= fftLength;
                 count++;
                 if (count == eegBands.length) {
                     break;
@@ -232,6 +238,7 @@ public class EEGProcessor {
             }
             if (eegBands[count].low <= frequencies[i]) {
                 eegBands[count].val += amplitudes[i];
+                TOTAL.val += amplitudes[i];
             }
         }
     }
@@ -245,6 +252,10 @@ public class EEGProcessor {
     private void insertAtEnd(double[] array, double value) {
         System.arraycopy(array, 1, array, 0, array.length - 1);
         array[array.length - 1] = value;
+    }
+
+    public double getRelativeBandpower(EEGBand eegBand) {
+        return eegBand.val / TOTAL.val;
     }
 
     public static class EEGBand implements Comparable<EEGBand> {
