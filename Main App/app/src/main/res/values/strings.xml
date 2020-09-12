@@ -14,6 +14,8 @@
     <string name="arm_weakness_instructions">Arm weakness instructions</string>
     <string name="facial_droop_instructions">Facial droop instructions</string>
     <string name="results_prompt">Results: \nStroke probability: %.2f</string>
+    <string name="start">Start</string>
+    <string name="test_complete">Test Done</string>
 
     <!-- Rehabilitation related strings -->
     <string name="eeg_training">EEG Training</string>
