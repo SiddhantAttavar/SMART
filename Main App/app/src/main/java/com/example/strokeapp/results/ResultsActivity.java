@@ -2,7 +2,6 @@ package com.example.strokeapp.results;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.strokeapp.EEGProcessor;
+import com.example.strokeapp.MuseFragment;
 import com.example.strokeapp.R;
 
 @SuppressLint("DefaultLocale")
@@ -19,6 +19,7 @@ public class ResultsActivity extends AppCompatActivity {
     Button connectButton;
     EEGProcessor eegProcessor = null;
     int count = 0;
+    MuseFragment museFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_results);
         results = findViewById(R.id.results_view);
         connectButton = findViewById(R.id.connect_button);
+        museFragment = (MuseFragment) getSupportFragmentManager().findFragmentById(R.id.muse_fragment);
     }
 
     public void completeTest(View view) {
@@ -58,7 +60,22 @@ public class ResultsActivity extends AppCompatActivity {
             count++;
             StringBuilder msg = new StringBuilder("EEG Bandpowers (Relative): \n");
             for (EEGProcessor.EEGBand eegBand: eegBands) {
-                msg.append(String.format("%s: %.4f\n", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand)));
+                msg.append(String.format("%s: %.4f ", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand)));
+                double total = museFragment.alpha + museFragment.beta + museFragment.theta + museFragment.delta;
+                switch (eegBand.bandName) {
+                    case "Alpha":
+                        msg.append(String.format("%.4f\n", museFragment.alpha / total));
+                        break;
+                    case "Beta":
+                        msg.append(String.format("%.4f\n", museFragment.beta / total));
+                        break;
+                    case "Theta":
+                        msg.append(String.format("%.4f\n", museFragment.theta / total));
+                        break;
+                    case "Delta":
+                        msg.append(String.format("%.4f\n", museFragment.delta / total));
+                        break;
+                }
             }
             ResultsActivity.this.runOnUiThread(() -> results.setText(msg.toString()));
             //Log.i("EEGProcessor", msg.toString());
@@ -74,5 +91,6 @@ public class ResultsActivity extends AppCompatActivity {
             eegProcessor.onPause();
             eegProcessor = null;
         }
+        museFragment.pause(true);
     }
 }

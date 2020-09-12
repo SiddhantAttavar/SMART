@@ -79,11 +79,11 @@ public class EEGProcessor {
     
     //We list the entire frequency band of interest (1 - 30 Hz) and a few common frequency bands in EEG-
     //Delta: 1 - 4 Hz; Theta: 4 - 8 Hz; Alpha: 8 - 13 Hz; Beta: 13 - 30 Hz 
-    public static final float LOW_PASS = 0.5f, HIGH_PASS = 25f;
-    public static final float DELTA_LOW = 0.5f, DELTA_HIGH = 4f;
+    public static final float LOW_PASS = 1f, HIGH_PASS = 25f;
+    public static final float DELTA_LOW = 1f, DELTA_HIGH = 4f;
     public static final float THETA_LOW = 4f, THETA_HIGH = 8f;
     public static final float ALPHA_LOW = 8f, ALPHA_HIGH = 14f;
-    public static final float BETA_LOW = 14f, BETA_HIGH = 25f;
+    public static final float BETA_LOW = 14f, BETA_HIGH = 30f;
 
     //We define an EEG Band for the total frequency band of interest
     private EEGBand TOTAL = new EEGBand(LOW_PASS, HIGH_PASS, "Total");

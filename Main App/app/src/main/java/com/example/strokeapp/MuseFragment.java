@@ -37,9 +37,10 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MuseFragment extends Fragment {
+
     private Spinner musesSpinner;
     private ArrayAdapter<String> spinnerAdapter;
-    private Button connectButton;
+    private Button connectButton, refresh;
 
     private MuseManagerAndroid museManager;
     private Muse muse;
@@ -65,10 +66,16 @@ public class MuseFragment extends Fragment {
      * values for EEG and EEG-derived packets.
      **/
     private final double[] alphaBuffer = new double[6];
-    private double alpha;
+    public double alpha;
 
     private final double[] betaBuffer = new double[6];
-    private double beta;
+    public double beta;
+
+    private final double[] thetaBuffer = new double[6];
+    public double theta;
+
+    private final double[] deltaBuffer = new double[6];
+    public double delta;
 
 
     public MuseFragment() {
@@ -138,6 +145,11 @@ public class MuseFragment extends Fragment {
         musesSpinner = root.findViewById(R.id.muses_spinner);
         musesSpinner.setAdapter(spinnerAdapter);
         connectButton = root.findViewById(R.id.connect);
+        refresh = root.findViewById(R.id.refresh);
+
+        connectButton.setOnClickListener((View view) -> connect());
+        refresh.setOnClickListener((View view) -> refresh());
+
         return root;
     }
 
@@ -187,6 +199,8 @@ public class MuseFragment extends Fragment {
                 muse.registerConnectionListener(connectionListener);
                 muse.registerDataListener(dataListener, MuseDataPacketType.ALPHA_ABSOLUTE);
                 muse.registerDataListener(dataListener, MuseDataPacketType.BETA_ABSOLUTE);
+                muse.registerDataListener(dataListener, MuseDataPacketType.THETA_ABSOLUTE);
+                muse.registerDataListener(dataListener, MuseDataPacketType.DELTA_ABSOLUTE);
 
                 // Initiate a connection to the headband and stream the data asynchronously.
                 muse.runAsynchronously();
@@ -295,6 +309,20 @@ public class MuseFragment extends Fragment {
                     throw new AssertionError("Buffer too small");
                 }
                 beta = getEegChannelValues(betaBuffer, p);
+                break;
+
+            case THETA_ABSOLUTE:
+                if (BuildConfig.DEBUG && !(thetaBuffer.length >= n)) {
+                    throw new AssertionError("Buffer too small");
+                }
+                theta = getEegChannelValues(thetaBuffer, p);
+                break;
+
+            case DELTA_ABSOLUTE:
+                if (BuildConfig.DEBUG && !(deltaBuffer.length >= n)) {
+                    throw new AssertionError("Buffer too small");
+                }
+                delta = getEegChannelValues(deltaBuffer, p);
                 break;
         }
     }
