@@ -43,7 +43,6 @@
                     android:id="@+id/refresh"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:onClick="refresh"
                     android:layout_height="match_parent"
                     android:text="@string/refresh"
                     android:layout_gravity="center_vertical" />
@@ -52,7 +51,6 @@
                     android:id="@+id/connect"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:onClick="connect"
                     android:layout_height="match_parent"
                     android:text="@string/connect"
                     android:layout_gravity="center_vertical"/>

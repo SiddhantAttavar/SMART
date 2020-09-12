@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".results.Results"
+    tools:context=".results.ResultsActivity"
     android:orientation="vertical"
     tools:ignore="HardcodedText">
 
@@ -30,16 +30,21 @@
         android:text="Real Time Test"
         android:onClick="realTimeTest" />
 
-    <ScrollView
+    <TextView
         style="@style/StandardFormatting"
-        android:layout_marginBottom="16dp">
+        android:id="@+id/results_view"
+        android:text=""
+        android:gravity="start"
+        android:textSize="12sp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/results_view"
-            android:text=""
-            android:gravity="start"
-            android:textSize="15sp"/>
-    </ScrollView>
+    <fragment
+        android:id="@+id/muse_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:name="com.example.strokeapp.MuseFragment"/>
 </LinearLayout>
