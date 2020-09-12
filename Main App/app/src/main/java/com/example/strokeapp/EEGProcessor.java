@@ -35,6 +35,10 @@ public class EEGProcessor {
     private InputStream inputStream;
     private final int REQUEST_ENABLE_BT = 1000;
 
+    //Limit for the EEG Buffer's and whether we want buffered data for smoother results
+    private final int BUFFER_LIMIT = 16;
+    private boolean bufferedData;
+
     //Whether the device is connected or not
     private boolean deviceConnected = false;
 
@@ -78,8 +82,8 @@ public class EEGProcessor {
     private EEGBand[] eegBands;
     
     //We list the entire frequency band of interest (1 - 30 Hz) and a few common frequency bands in EEG-
-    //Delta: 1 - 4 Hz; Theta: 4 - 8 Hz; Alpha: 8 - 13 Hz; Beta: 13 - 30 Hz 
-    public static final float LOW_PASS = 1f, HIGH_PASS = 25f;
+    //Delta: 1 - 4 Hz; Theta: 4 - 8 Hz; Alpha: 8 - 14 Hz; Beta: 14 - 30 Hz
+    public static final float LOW_PASS = 1f, HIGH_PASS = 30f;
     public static final float DELTA_LOW = 1f, DELTA_HIGH = 4f;
     public static final float THETA_LOW = 4f, THETA_HIGH = 8f;
     public static final float ALPHA_LOW = 8f, ALPHA_HIGH = 14f;
@@ -96,12 +100,13 @@ public class EEGProcessor {
      * @param analyseResults Runnable to be called after analysis
      * @param eegBands EEG frequency bands of interest
      */
-    public EEGProcessor(Activity activity, Button connectButton, boolean runRealTime, Runnable analyseResults, EEGBand[] eegBands) {
+    public EEGProcessor(Activity activity, EEGBand[] eegBands, Button connectButton, boolean runRealTime, boolean bufferedData, Runnable analyseResults) {
         this.activity = activity;
         this.connectButton = connectButton;
         this.runRealTime = runRealTime;
         this.eegBands = eegBands;
         this.analyseResults = analyseResults;
+        this.bufferedData = bufferedData;
 
         //Set an on click listener for the connect/disconnect button
         this.connectButton.setText(R.string.connect);
@@ -151,7 +156,7 @@ public class EEGProcessor {
 
             //Get the input stream
             if (test) {
-                inputStream = activity.getAssets().open("EEG Sample Data.txt");
+                inputStream = activity.getApplicationContext().getAssets().open("EEG Sample Data.txt");
             }
             else {
                 inputStream = socket.getInputStream();
@@ -191,6 +196,13 @@ public class EEGProcessor {
     }
 
     /**
+     * Change the running state
+     */
+    public void setRunRealTime(boolean runRealTime) {
+        this.runThread = runRealTime;
+    }
+
+    /**
      * Called when the user clicks on the connect/disconnect button
      * If the device is connected it stops the thread
      * Else it creates a new Thread and starts it to begin listening for data
@@ -209,7 +221,6 @@ public class EEGProcessor {
         else {
             thread = new Thread(() -> {
                 if (test || (BTinit() && BTconnect())) {
-                    activity.runOnUiThread(() -> Toast.makeText(activity, "Bluetooth connect works", Toast.LENGTH_SHORT).show());
                     deviceConnected = true;
                     listenForData();
                 }
@@ -372,6 +383,11 @@ public class EEGProcessor {
         //a mirror image of the first half
         for (int i = 0; i < fftLength / 2; i++) {
             if (eegBands[count].high < frequencies[i]) {
+                if (bufferedData) {
+                    //Add the value to the buffer
+                    eegBands[count].buffer.add(eegBands[count].val);
+                }
+
                 //We need to move to the next frequency band or exit the loop
                 count++;
                 if (count == eegBands.length) {
@@ -382,11 +398,34 @@ public class EEGProcessor {
                 //This value comes under the current frequency band
                 //We must add the value here to this band and the total value
                 eegBands[count].val += amplitudes[i];
+            }
+            if (TOTAL.low <= frequencies[i] && TOTAL.high > frequencies[i]) {
                 TOTAL.val += amplitudes[i];
             }
         }
 
-        analyseResults.run();
+        //We perform the analysis only if the buffer is full
+        if (bufferedData && eegBands[0].buffer.size() == BUFFER_LIMIT) {
+            //We average the buffer readings to get smoother results
+            for (EEGBand eegBand: eegBands) {
+                eegBand.val = 0;
+                for (double bufferValue: eegBand.buffer) {
+                    eegBand.val += bufferValue;
+                }
+                eegBand.val /= BUFFER_LIMIT;
+            }
+
+            //Perform analysis
+            analyseResults.run();
+
+            //Reset the buffers
+            for (EEGBand eegBand: eegBands) {
+                eegBand.buffer = new ArrayList<>();
+            }
+        }
+        else if (!runRealTime) {
+            analyseResults.run();
+        }
     }
 
     /**
@@ -405,10 +444,12 @@ public class EEGProcessor {
      * We can define a frequency band as all the frequencies in a given range
      */
     public static class EEGBand implements Comparable<EEGBand> {
-        //Basic properties of the band: min frequency, max frequency, bandpower and name
+        //Basic properties of the band: min frequency, max frequency, bandpower, name and
+        //buffer for storing temporary EEG values
         public float low, high;
         public double val = 0;
         public String bandName;
+        public List<Double> buffer = new ArrayList<>();
 
         /**
          * Constructor for the band

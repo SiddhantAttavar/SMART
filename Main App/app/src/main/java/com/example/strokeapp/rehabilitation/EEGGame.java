@@ -11,7 +11,7 @@ import com.example.strokeapp.GameLogic;
 import com.example.strokeapp.R;
 
 public class EEGGame extends GameLogic {
-    private Plane plane;
+    public Plane plane;
 
     public EEGGame(Context context) {
         super(context);
@@ -59,7 +59,7 @@ public class EEGGame extends GameLogic {
         }
     }
 
-    private static class Plane {
+    public static class Plane {
         GameObject state1, state2;
         private int state = 1;
         public int height;
