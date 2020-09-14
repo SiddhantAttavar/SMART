@@ -27,46 +27,11 @@
     <string name="refresh">Refresh</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="connecting">Connecting</string>
+    <string name="disconnecting">Disconnecting</string>
     <string name="permission_dialog_title">Muse Needs Your Permission</string>
     <string name="permission_dialog_description">Muse needs a few permissions to work properly. On the next screens, tap "Allow" to proceed. If you deny, Muse will not work properly until you go into your Android settings and allow.</string>
     <string name="permission_dialog_understand">I Understand</string>
 
     <string name="cognitive_training">Cognitive Training</string>
-    <string name="submit">Submit</string>
-    <string name="time_over">Time Up</string>
-    <string name="next">Next</string>
-    <string name="answer_prompt">Please submit your answer</string>
-
-    <string name="memory">Memory</string>
-    <string name="language">Language</string>
-    <string name="mental_aptitude">Mental Aptitude</string>
-
-    <string name="memory_question">You have %d seconds to remember these %d words: %s</string>
-    <string name="memory_wait_instructions">Please wait for %d seconds</string>
-    <string name="memory_instructions">Enter the words that you just\n remembered separated by a comma </string>
-    <string-array name="memory_words">
-        <item>area</item><item>book</item><item>business</item><item>case</item><item>child</item><item>company</item><item>country</item><item>day</item>
-        <item>eye</item><item>fact</item><item>family</item><item>government</item><item>group</item><item>hand</item><item>home</item><item>job</item>
-        <item>life</item><item>lot</item><item>man</item><item>money</item><item>month</item><item>mother</item><item>night</item><item>number</item><item>office</item>
-        <item>part</item><item>people</item><item>place</item><item>point</item><item>problem</item><item>program</item><item>question</item><item>right</item>
-        <item>room</item><item>school</item><item>state</item><item>story</item><item>student</item><item>study</item><item>system</item><item>thing</item>
-        <item>time</item><item>water</item><item>way</item><item>week</item><item>woman</item><item>word</item><item>work</item><item>world</item><item>year</item>
-    </string-array>
-
-    <string-array name="language_questions">
-        <item>Please select the picture which shows a </item>
-        <item>Please select the picture which contains the letter </item>
-    </string-array>
-    <string-array name="language_question_1_options">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-    </string-array>
-    <string-array name="language_question_2_options">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-    </string-array>
 </resources>

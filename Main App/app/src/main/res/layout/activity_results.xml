@@ -12,11 +12,11 @@
         style="@style/TitleFormatting"
         android:text="@string/results"/>
 
-    <Button
-        android:id="@+id/connect_button"
+    <fragment
+        android:id="@+id/eeg_fragment"
         style="@style/StandardFormatting"
-        android:text="Connect"
-        android:onClick="realTimeTest"/>
+        android:layout_weight="2"
+        android:name="com.example.strokeapp.eeg.EEGFragment"/>
 
     <Button
         android:id="@+id/complete_test_button"
