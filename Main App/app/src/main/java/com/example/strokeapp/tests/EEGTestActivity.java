@@ -4,27 +4,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.strokeapp.EEGProcessor;
 import com.example.strokeapp.R;
+import com.example.strokeapp.eeg.EEGFragment;
+
+import static com.example.strokeapp.eeg.EEGFragment.ALPHA_HIGH;
+import static com.example.strokeapp.eeg.EEGFragment.ALPHA_LOW;
+import static com.example.strokeapp.eeg.EEGFragment.DELTA_HIGH;
+import static com.example.strokeapp.eeg.EEGFragment.DELTA_LOW;
 
 @SuppressWarnings({"FieldCanBeLocal", "DefaultLocale"})
 public class EEGTestActivity extends AppCompatActivity {
 
-    private Button connect;
     private ProgressBar progressBar;
     private TextView timer, results;
+    private EEGFragment eegFragment;
 
-    private EEGProcessor eegProcessor;
-    private EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-        new EEGProcessor.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
-        new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha")
+    private EEGFragment.EEGBand[] eegBands = new EEGFragment.EEGBand[] {
+        new EEGFragment.EEGBand(DELTA_LOW, DELTA_HIGH, "Delta"),
+        new EEGFragment.EEGBand(ALPHA_LOW, ALPHA_HIGH, "Alpha")
     };
     private double DAR;
     private final double STROKE_THRESHOLD = 3.7;
@@ -41,7 +44,6 @@ public class EEGTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eeg_test);
 
-        connect = findViewById(R.id.connect);
         progressBar = findViewById(R.id.progress_bar);
         timer = findViewById(R.id.timer);
         results = findViewById(R.id.result);
@@ -54,11 +56,13 @@ public class EEGTestActivity extends AppCompatActivity {
             progressBar.setProgress(0);
         }
 
-        eegProcessor = new EEGProcessor(this, eegBands, connect, false, false, () -> {
+        eegFragment = (EEGFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_fragment);
+        assert eegFragment != null;
+        eegFragment.setup(eegBands, false, false, () -> {
             DAR = eegBands[0].val / eegBands[1].val;
 
             EEGTestActivity.this.runOnUiThread(() -> {
-                if (DAR <= STROKE_THRESHOLD) {
+                if (DAR > STROKE_THRESHOLD) {
                     results.setText(String.format("%.4f\nStroke: Yes", DAR));
                 }
                 else {
@@ -73,8 +77,9 @@ public class EEGTestActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        eegProcessor.onPause();
-        countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 
     public void startTest(View view) {
@@ -93,7 +98,7 @@ public class EEGTestActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                eegProcessor.setRunRealTime(false);
+                eegFragment.disconnect();
 
                 timer.setText(R.string.test_complete);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

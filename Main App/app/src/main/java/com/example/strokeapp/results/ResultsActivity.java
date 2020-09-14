@@ -3,75 +3,71 @@ package com.example.strokeapp.results;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.strokeapp.EEGProcessor;
 import com.example.strokeapp.R;
+import com.example.strokeapp.eeg.EEGFragment;
+import com.example.strokeapp.eeg.EEGProcessor;
 
 @SuppressLint("DefaultLocale")
 public class ResultsActivity extends AppCompatActivity {
 
     TextView results;
-    Button connectButton;
-    EEGProcessor eegProcessor = null;
-    int count = 0;
+    EEGFragment eegFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
         results = findViewById(R.id.results_view);
-        connectButton = findViewById(R.id.connect_button);
+
+        eegFragment = (EEGFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_fragment);
     }
 
     public void completeTest(View view) {
-        EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-                new EEGProcessor.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
-                new EEGProcessor.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
-                new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
-                new EEGProcessor.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
+        EEGFragment.EEGBand[] eegBands = new EEGFragment.EEGBand[] {
+                new EEGFragment.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
+                new EEGFragment.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
+                new EEGFragment.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
+                new EEGFragment.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
         };
 
         results.setText("Complete Test: \n");
-        eegProcessor = new EEGProcessor(this, eegBands, connectButton, false, false, () -> {
-            for (EEGProcessor.EEGBand eegBand: eegBands) {
-                ResultsActivity.this.runOnUiThread(() -> results.append(String.format("%s Relative: %.2f\n", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand))));
+        assert eegFragment != null;
+        eegFragment.setup(eegBands, false, false, () -> {
+            for (EEGFragment.EEGBand eegBand: eegBands) {
+                ResultsActivity.this.runOnUiThread(() -> results.append(String.format("%s Relative: %.2f\n", eegBand.bandName, eegFragment.getRelativeBandpower(eegBand))));
             }
         });
-        eegProcessor.test = false;
     }
 
     public void realTimeTest(View view) {
-        EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-                new EEGProcessor.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
-                new EEGProcessor.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
-                new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
-                new EEGProcessor.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
+        EEGFragment.EEGBand[] eegBands = new EEGFragment.EEGBand[] {
+                new EEGFragment.EEGBand(EEGProcessor.DELTA_LOW, EEGProcessor.DELTA_HIGH, "Delta"),
+                new EEGFragment.EEGBand(EEGProcessor.THETA_LOW, EEGProcessor.THETA_HIGH, "Theta"),
+                new EEGFragment.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
+                new EEGFragment.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
         };
 
         results.setText("Real Time Test: \n");
-        eegProcessor = new EEGProcessor(this, eegBands, connectButton, true, false,  () -> {
-            count++;
+        assert eegFragment != null;
+        eegFragment.setup(eegBands, true, false, () -> {
             StringBuilder msg = new StringBuilder("EEG Bandpowers (Relative): \n");
-            for (EEGProcessor.EEGBand eegBand: eegBands) {
-                msg.append(String.format("%s: %.4f ", eegBand.bandName, eegProcessor.getRelativeBandpower(eegBand)));
+            for (EEGFragment.EEGBand eegBand: eegBands) {
+                msg.append(String.format("%s Relative: %.4f\n", eegBand.bandName, eegFragment.getRelativeBandpower(eegBand)));
             }
             ResultsActivity.this.runOnUiThread(() -> results.setText(msg.toString()));
         });
-
-        eegProcessor.test = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (eegProcessor != null) {
-            eegProcessor.onPause();
-            eegProcessor = null;
+        if (eegFragment != null) {
+            eegFragment.onPause();
+            eegFragment = null;
         }
     }
 }

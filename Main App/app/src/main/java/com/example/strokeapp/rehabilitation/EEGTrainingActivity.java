@@ -9,7 +9,8 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.example.strokeapp.EEGProcessor;
+import com.example.strokeapp.eeg.EEGFragment;
+import com.example.strokeapp.eeg.EEGProcessor;
 import com.example.strokeapp.R;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused", "RedundantSuppression"})
@@ -20,11 +21,11 @@ public class EEGTrainingActivity extends FragmentActivity {
     private Button connectButton;
     private View ssvep;
 
-    private EEGProcessor eegProcessor;
+    private EEGFragment eegFragment;
     double ABR = 0;
-    private EEGProcessor.EEGBand[] eegBands = new EEGProcessor.EEGBand[] {
-            new EEGProcessor.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
-            new EEGProcessor.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
+    private EEGFragment.EEGBand[] eegBands = new EEGFragment.EEGBand[] {
+            new EEGFragment.EEGBand(EEGProcessor.ALPHA_LOW, EEGProcessor.ALPHA_HIGH, "Alpha"),
+            new EEGFragment.EEGBand(EEGProcessor.BETA_LOW, EEGProcessor.BETA_HIGH, "Beta")
     };
 
     public boolean isPlaying = true;
@@ -59,7 +60,6 @@ public class EEGTrainingActivity extends FragmentActivity {
         setContentView(R.layout.activity_eeg_training);
         eegGame = findViewById(R.id.game);
         playButton = findViewById(R.id.pause_button);
-        connectButton = findViewById(R.id.connect_button);
         ssvep = findViewById(R.id.ssvep_view);
 
         green = getResources().getColor(R.color.green);
@@ -67,7 +67,9 @@ public class EEGTrainingActivity extends FragmentActivity {
 
         handler = new Handler(getMainLooper());
 
-        eegProcessor = new EEGProcessor(this, eegBands, connectButton, true, true, this::analyze);
+        eegFragment = (EEGFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_fragment);
+        assert eegFragment != null;
+        eegFragment.setup(eegBands, true, true, this::analyze);
     }
 
     private void analyze() {
@@ -86,7 +88,7 @@ public class EEGTrainingActivity extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        eegProcessor.onPause();
+        eegFragment.onPause();
         isPlaying = false;
         pause();
     }
