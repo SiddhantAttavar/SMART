@@ -1,14 +1,23 @@
 package com.example.strokeapp.rehabilitation;
 
+import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.os.Bundle;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-
+import com.example.strokeapp.MenuItemFragment;
 import com.example.strokeapp.R;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class RehabilitationActivity extends AppCompatActivity {
+
+    //UI elements
+    private MenuItemFragment eegTrainingMenuItemFragment;
+    private MenuItemFragment cognitiveNumberTrainingMenuItemFragment;
+    private MenuItemFragment cognitiveStroopTrainingMenuItemFragment;
+    private ImageView circle;
 
     /**
      * Called when the activity is created
@@ -17,26 +26,23 @@ public class RehabilitationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rehabilitation);
-    }
 
-    /**
-     * Go to EEG training activity
-     */
-    public void goToEEGTraining(View view) {
-        startActivity(new Intent(getApplicationContext(), EEGTrainingActivity.class));
-    }
+        //Initialize UI
+        circle = findViewById(R.id.circle);
+        eegTrainingMenuItemFragment = (MenuItemFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_training);
+        cognitiveNumberTrainingMenuItemFragment = (MenuItemFragment) getSupportFragmentManager().findFragmentById(R.id.cognitive_number_training);
+        cognitiveStroopTrainingMenuItemFragment = (MenuItemFragment) getSupportFragmentManager().findFragmentById(R.id.cognitive_stroop_training);
 
-    /**
-     * Go to Cognitive Number training activity
-     */
-    public void goToCognitiveNumberTraining(View view) {
-        startActivity(new Intent(getApplicationContext(), CognitiveTrainingNumberActivity.class));
-    }
+        //Set up the fragments
+        eegTrainingMenuItemFragment.setup(R.drawable.eeg_training, R.string.eeg_training, R.color.rehabilitation_accent_color,
+                () -> startActivity(new Intent(getApplicationContext(), EEGTrainingActivity.class)));
 
-    /**
-     * Go to Cognitive Stroop training activity
-     */
-    public void goToCognitiveStroopTraining(View view) {
-        startActivity(new Intent(getApplicationContext(), CognitiveTrainingStroopActivity.class));
+        cognitiveNumberTrainingMenuItemFragment.setup(R.drawable.cognitive_number_training, R.string.cognitive_number_training, R.color.rehabilitation_accent_color,
+                () -> startActivity(new Intent(getApplicationContext(), CognitiveTrainingNumberActivity.class)));
+
+        cognitiveStroopTrainingMenuItemFragment.setup(R.drawable.results, R.string.cognitive_stroop_training, R.color.rehabilitation_accent_color,
+                () -> startActivity(new Intent(getApplicationContext(), CognitiveTrainingStroopActivity.class)));
+
+        circle.getDrawable().setColorFilter(getResources().getColor(R.color.rehabilitation_accent_color), PorterDuff.Mode.SRC_ATOP);
     }
 }

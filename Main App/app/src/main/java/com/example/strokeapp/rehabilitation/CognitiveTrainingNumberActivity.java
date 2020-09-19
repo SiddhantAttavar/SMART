@@ -129,6 +129,10 @@ public class CognitiveTrainingNumberActivity extends AppCompatActivity {
      * @param gridSize Grid size (It is a square)
      */
     private void startGame(int totalNumbers, int gridSize) {
+        if (questions > TOTAL_QUESTIONS) {
+            return;
+        }
+
         this.totalNumbers = totalNumbers;
         this.gridSize = gridSize;
 
@@ -166,6 +170,10 @@ public class CognitiveTrainingNumberActivity extends AppCompatActivity {
      * Ends the question
      */
     private void endQuestion() {
+        if (questions >= TOTAL_QUESTIONS) {
+            return;
+        }
+
         askingQuestion = false;
         tableLayout.removeAllViews();
 
@@ -186,7 +194,7 @@ public class CognitiveTrainingNumberActivity extends AppCompatActivity {
             //Increment the grid size and the total numbers to be asked for
             gridSize++;
             totalNumbers++;
-            timerFragment.setNextOnClickListener((View view) -> startGame(totalNumbers, gridSize));
+            timerFragment.setNextOnClickListener(() -> startGame(totalNumbers, gridSize));
         }
         else {
             instructions.append("\nThis test is complete");
@@ -220,6 +228,8 @@ public class CognitiveTrainingNumberActivity extends AppCompatActivity {
 
             tableLayout.addView(gridRows[row], rowLayoutParams);
         }
+
+        instructions.setText(R.string.cognitive_number_training_instructions);
     }
 
     /**

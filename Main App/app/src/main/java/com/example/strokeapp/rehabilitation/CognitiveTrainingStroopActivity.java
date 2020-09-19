@@ -144,7 +144,7 @@ public class CognitiveTrainingStroopActivity extends AppCompatActivity {
         timerFragment.cancelTimer();
 
         if (questions < TOTAL_QUESTIONS) {
-            timerFragment.setNextOnClickListener((View view) -> askQuestion());
+            timerFragment.setNextOnClickListener(this::askQuestion);
         }
         else {
             instructions.append("\nThis test is complete");
@@ -160,5 +160,6 @@ public class CognitiveTrainingStroopActivity extends AppCompatActivity {
         if (askingColorQuestion) {
             this.submission = submission;
         }
+        endQuestion();
     }
 }

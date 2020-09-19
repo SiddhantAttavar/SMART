@@ -70,7 +70,7 @@ public class TimerFragment extends Fragment {
              */
             @Override
             public void onTick(long timeLeft) {
-                long timeDone = time - timeLeft;
+                long timeDone = time * 1000 - timeLeft;
                 timer.setText(String.valueOf(timeDone / 1000));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     progressBar.setProgress((int) timeDone, true);
@@ -124,9 +124,15 @@ public class TimerFragment extends Fragment {
      * Sets the on click listener of the next button
      * @param onClickListener On click listener of the button to be set
      */
-    public void setNextOnClickListener(View.OnClickListener onClickListener) {
+    public void setNextOnClickListener(Runnable onClickListener) {
         cancelTimer();
-        next.setOnClickListener(onClickListener);
+        next.setOnClickListener((View view) -> {
+            if (!done) {
+                done = true;
+                onClickListener.run();
+            }
+        });
+        done = false;
     }
 
     /**
