@@ -14,6 +14,7 @@
     <string name="arm_weakness_instructions">Arm weakness instructions</string>
     <string name="facial_droop_instructions">Facial droop instructions</string>
     <string name="results_prompt">Results: \nStroke probability: %.2f</string>
+    <string name="stroke_test_result">Stroke: %s</string>
     <string name="start">Start</string>
     <string name="test_complete">Test Done</string>
 
@@ -23,15 +24,33 @@
     <string name="game_fragment_text">Game fragment</string>
     <string name="play">play/pause</string>
 
-    <!-- Muse and EEG related strings -->
+    <!-- EEG related strings -->
     <string name="refresh">Refresh</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
     <string name="connecting">Connecting</string>
     <string name="disconnecting">Disconnecting</string>
-    <string name="permission_dialog_title">Muse Needs Your Permission</string>
-    <string name="permission_dialog_description">Muse needs a few permissions to work properly. On the next screens, tap "Allow" to proceed. If you deny, Muse will not work properly until you go into your Android settings and allow.</string>
-    <string name="permission_dialog_understand">I Understand</string>
 
+    <!-- Cognitive Training related strings -->
     <string name="cognitive_training">Cognitive Training</string>
+    <string name="cognitive_number_training">Cognitive Number Test</string>
+    <string name="cognitive_stroop_training">Cognitive Stroop Test</string>
+    <string name="cognitive_number_training_instructions">Try to remember the positions of the different numbers</string>
+    <string name="cognitive_number_training_question">Click the buttons in order of the numbers underneath them</string>
+    <string name="cognitive_stroop_training_instructions_name">Please enter the word written below</string>
+    <string name="cognitive_stroop_training_instructions_color">Please select the color representing the word written below</string>
+    <string name="cognitive_training_score">Your score: %d / %d</string>
+    <string name="next">Next</string>
+    <string name="time_over">Timer Over</string>
+    <string name="stroop_test_name_hint">Enter the name over here</string>
+    <string-array name="stroop_test_options">
+        <item>GREEN</item>
+        <item>RED</item>
+        <item>YELLOW</item>
+        <item>BLUE</item>
+    </string-array>
+
+    <!-- Results related strings -->
+    <string name="id">ID: %d</string>
+    <string name="result">Results: %s</string>
 </resources>

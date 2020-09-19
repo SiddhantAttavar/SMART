@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".results.ResultsActivity"
     android:orientation="vertical"
     tools:ignore="HardcodedText">
@@ -12,29 +12,17 @@
         style="@style/TitleFormatting"
         android:text="@string/results"/>
 
-    <fragment
-        android:id="@+id/eeg_fragment"
+    <ScrollView
         style="@style/StandardFormatting"
-        android:layout_weight="2"
-        android:name="com.example.strokeapp.eeg.EEGFragment"/>
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/complete_test_button"
-        style="@style/StandardFormatting"
-        android:text="Complete Test"
-        android:onClick="completeTest"/>
-
-    <Button
-        android:id="@+id/real_time_test_button"
-        style="@style/StandardFormatting"
-        android:text="Real Time Test"
-        android:onClick="realTimeTest" />
-
-    <TextView
-        style="@style/StandardFormatting"
-        android:id="@+id/results_view"
-        android:text=""
-        android:gravity="start"
-        android:textSize="12sp"
-        android:layout_marginBottom="16dp"/>
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            style="@style/StandardFormatting"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+    </ScrollView>
 </LinearLayout>

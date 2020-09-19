@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".rehabilitation.CognitiveTrainingStroopActivity"
+    tools:ignore="InefficientWeight"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TitleFormatting"
+        android:text="@string/cognitive_stroop_training"/>
+
+    <TextView
+        android:id="@+id/instructions"
+        style="@style/StandardFormatting"
+        android:text="@string/cognitive_stroop_training_instructions_name"
+        android:textSize="20sp"/>
+
+    <androidx.cardview.widget.CardView
+        style="@style/StandardFormatting"
+        android:layout_marginBottom="16dp"
+        app:cardElevation="15sp"
+        app:cardCornerRadius="10dp"
+        android:layout_weight="4"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/question"
+                style="@style/StandardFormatting"
+                android:layout_marginTop="16dp"
+                android:textSize="40sp"
+                android:textColor="@color/black"/>
+
+            <TableLayout
+                android:id="@+id/table_layout"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/option_1"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:background="@color/green"/>
+
+                    <Button
+                        android:id="@+id/option_2"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:background="@color/red"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/option_3"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:background="@color/yellow" />
+
+                    <Button
+                        android:id="@+id/option_4"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:background="@color/blue"/>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <fragment
+        android:id="@+id/timer_fragment"
+        style="@style/StandardFormatting"
+        android:layout_marginBottom="16dp"
+        android:name="com.example.strokeapp.rehabilitation.TimerFragment"/>
+</LinearLayout>

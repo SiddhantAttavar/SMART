@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +9,7 @@
 
     <TextView
         style="@style/TitleFormatting"
-        android:text="@string/test"/>
+        android:text="@string/rehabilitation"/>
 
     <Button
         android:id="@+id/eeg_training_button"
@@ -19,15 +18,16 @@
         android:onClick="goToEEGTraining"/>
 
     <Button
-        android:id="@+id/motor_training_button"
+        android:id="@+id/cognitive_number_training_button"
         style="@style/StandardFormatting"
-        android:text="@string/motor_training"
-        android:onClick="goToMotorTraining"/>
+        android:text="@string/cognitive_number_training"
+        android:onClick="goToCognitiveNumberTraining"
+        android:layout_marginBottom="16dp"/>
 
     <Button
-        android:id="@+id/cognitive_training_button"
+        android:id="@+id/cognitive_stroop_training_button"
         style="@style/StandardFormatting"
-        android:text="@string/cognitive_training"
-        android:onClick="goToCogntiveTraining"
+        android:text="@string/cognitive_stroop_training"
+        android:onClick="goToCognitiveStroopTraining"
         android:layout_marginBottom="16dp"/>
 </LinearLayout>

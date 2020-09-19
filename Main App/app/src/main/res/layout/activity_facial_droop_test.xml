@@ -22,13 +22,13 @@
         android:layout_marginBottom="8dp"
         android:padding="8dp"/>
 
-    <fragment
-        android:id="@+id/camera_fragment"
+    <ImageView
+        android:id="@+id/image_view"
         style="@style/StandardFormatting"
         android:layout_weight="3"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:name="com.example.strokeapp.imageprocessing.CameraFragment"/>
+        android:src="@drawable/camera"/>
 
     <Button
         style="@style/StandardFormatting"
