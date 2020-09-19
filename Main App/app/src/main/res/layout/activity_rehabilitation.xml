@@ -5,29 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".rehabilitation.RehabilitationActivity"
+    tools:ignore="ContentDescription, FragmentTagUsage"
     android:orientation="vertical">
 
     <TextView
         style="@style/TitleFormatting"
         android:text="@string/rehabilitation"/>
 
-    <Button
-        android:id="@+id/eeg_training_button"
+    <RelativeLayout
         style="@style/StandardFormatting"
-        android:text="@string/eeg_training"
-        android:onClick="goToEEGTraining"/>
+        android:layout_weight="3"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="64dp">
 
-    <Button
-        android:id="@+id/cognitive_number_training_button"
-        style="@style/StandardFormatting"
-        android:text="@string/cognitive_number_training"
-        android:onClick="goToCognitiveNumberTraining"
-        android:layout_marginBottom="16dp"/>
+        <ImageView
+            android:id="@+id/circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/circle" />
 
-    <Button
-        android:id="@+id/cognitive_stroop_training_button"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/rehabilitation"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/eeg_training"
         style="@style/StandardFormatting"
-        android:text="@string/cognitive_stroop_training"
-        android:onClick="goToCognitiveStroopTraining"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="0dp"
+        android:name="com.example.strokeapp.MenuItemFragment" />
+
+    <fragment
+        android:id="@+id/cognitive_number_training"
+        style="@style/StandardFormatting"
+        android:layout_marginTop="0dp"
+        android:name="com.example.strokeapp.MenuItemFragment" />
+
+    <fragment
+        android:id="@+id/cognitive_stroop_training"
+        style="@style/StandardFormatting"
+        android:layout_marginTop="0dp"
+        android:name="com.example.strokeapp.MenuItemFragment" />
 </LinearLayout>

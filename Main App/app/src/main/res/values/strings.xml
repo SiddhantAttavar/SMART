@@ -9,6 +9,7 @@
     <!-- Test related strings -->
     <string name="facial_droop">Facial Droop</string>
     <string name="arm_weakness">Arm weakness</string>
+    <string name="eeg_test">EEG Test</string>
     <string name="eeg">EEG</string>
     <string name="capture">Capture Image</string>
     <string name="arm_weakness_instructions">Arm weakness instructions</string>
@@ -53,4 +54,6 @@
     <!-- Results related strings -->
     <string name="id">ID: %d</string>
     <string name="result">Results: %s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

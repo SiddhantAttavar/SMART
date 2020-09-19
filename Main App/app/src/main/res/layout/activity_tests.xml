@@ -4,36 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tests.TestsActivity"
+    tools:ignore="ContentDescription, FragmentTagUsage"
     android:orientation="vertical">
 
     <TextView
         style="@style/TitleFormatting"
         android:text="@string/test"/>
 
-    <Button
-        android:id="@+id/facial_droop_button"
+    <RelativeLayout
         style="@style/StandardFormatting"
         android:layout_weight="3"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/facial_droop"
-        android:onClick="goToFacialDroopTest"/>
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="64dp">
 
-    <Button
-        android:id="@+id/arm_weakness_button"
-        style="@style/StandardFormatting"
-        android:layout_weight="3"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/arm_weakness"
-        android:onClick="goToArmWeaknessTest"/>
+        <ImageView
+            android:id="@+id/circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/circle" />
 
-    <Button
-        android:id="@+id/eeg_test_button"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/tests"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/eeg_test"
         style="@style/StandardFormatting"
-        android:layout_weight="3"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/eeg"
-        android:onClick="goToEEGTest"/>
+        android:name="com.example.strokeapp.MenuItemFragment"/>
+
+    <fragment
+        android:id="@+id/facial_droop"
+        style="@style/StandardFormatting"
+        android:layout_marginTop="0dp"
+        android:name="com.example.strokeapp.MenuItemFragment" />
+
+    <fragment
+        android:id="@+id/arm_weakness"
+        style="@style/StandardFormatting"
+        android:name="com.example.strokeapp.MenuItemFragment"/>
 </LinearLayout>
