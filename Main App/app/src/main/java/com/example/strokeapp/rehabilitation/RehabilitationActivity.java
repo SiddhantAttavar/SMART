@@ -27,16 +27,16 @@ public class RehabilitationActivity extends AppCompatActivity {
     }
 
     /**
-     * Go to Motor training activity
+     * Go to Cognitive Number training activity
      */
-    public void goToMotorTraining(View view) {
-        startActivity(new Intent(getApplicationContext(), MotorTrainingActivity.class));
+    public void goToCognitiveNumberTraining(View view) {
+        startActivity(new Intent(getApplicationContext(), CognitiveTrainingNumberActivity.class));
     }
 
     /**
-     * Go to Congitive training activity
+     * Go to Cognitive Stroop training activity
      */
-    public void goToCogntiveTraining(View view) {
-        startActivity(new Intent(getApplicationContext(), CognitiveTrainingActivity.class));
+    public void goToCognitiveStroopTraining(View view) {
+        startActivity(new Intent(getApplicationContext(), CognitiveTrainingStroopActivity.class));
     }
 }

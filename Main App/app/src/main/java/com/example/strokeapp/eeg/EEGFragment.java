@@ -21,27 +21,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
- */
 @SuppressWarnings({"FieldCanBeLocal", "unused", "RedundantSuppression"})
 public class EEGFragment extends Fragment {
 
+    //UI elements
     private View root;
     private Button refresh, connect;
     private Spinner spinner;
     private Activity activity;
 
+    //Bluetooth Low Energy Manager class
     private BLE ble;
 
+    //Whether we are running real time analysis
     private boolean runRealTime;
+
+    //Data analyzer
+    private Runnable analyseResults;
 
     //Limit for the EEG Buffer's and whether we want buffered data for smoother results
     private final int BUFFER_LIMIT = 16;
     private boolean bufferedData;
-
-    private Runnable analyseResults;
 
     //We define the sampling frequency and the window length for real time analysis
     //and initialize the fftLength
@@ -103,15 +103,15 @@ public class EEGFragment extends Fragment {
         }
     };
 
-    public EEGFragment() {
-        // Required empty public constructor
-    }
+    /**
+     * Required empty public constructor
+     */
+    public EEGFragment() {}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
+    /**
+     * Called when the fragment is created
+     * @return the root view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -121,14 +121,19 @@ public class EEGFragment extends Fragment {
         connect = root.findViewById(R.id.connect);
         spinner = root.findViewById(R.id.spinner);
 
-        ble = new BLE(activity, spinner, connect, dataAnalyzer);
-
-        refresh.setOnClickListener(view -> ble.refresh());
-        connect.setOnClickListener(view -> ble.connect());
+        //Instantiate the BLE manager class
+        ble = new BLE(activity, spinner, refresh, connect, dataAnalyzer);
 
         return root;
     }
 
+    /**
+     * Sets up the class
+     * @param eegBands EEG frequency bands of interest
+     * @param runRealTime Whether we want to run real time analysis
+     * @param bufferedData Whether we want buffered data
+     * @param analyseResults Runnable to analyse reults
+     */
     public void setup(EEGBand[] eegBands, boolean runRealTime, boolean bufferedData, Runnable analyseResults) {
         this.runRealTime = runRealTime;
         this.eegBands = eegBands;
@@ -147,12 +152,20 @@ public class EEGFragment extends Fragment {
         rawData = new double[fftLength];
     }
 
+    /**
+     * Called when the fragment is paused
+     * Disconnects BLE device
+     */
     @Override
     public void onPause() {
         super.onPause();
         ble.disconnect();
     }
 
+    /**
+     * Called when we want to disconnect the device
+     * Performs analysis if we do not wish to run real time
+     */
     public void disconnect() {
         ble.disconnect();
 
@@ -167,6 +180,14 @@ public class EEGFragment extends Fragment {
             //Perform processing of data
             processData(getArr(rawDataList));
         }
+    }
+
+    /**
+     * Returns whether the device is connected
+     * @return Whether the device is connected
+     */
+    public boolean isConnected() {
+        return ble.connected;
     }
 
     /**
@@ -237,9 +258,9 @@ public class EEGFragment extends Fragment {
     }
 
     /**
-     * Calulates the Bandpowers for the frequency bands of interest
+     * Calculates the Bandpowers for the frequency bands of interest
      * from the frequency and amplitude results
-     * as well as the total bandpoewr of all frquencies which is used
+     * as well as the total bandpower of all frequencies which is used
      * for the calculate the relative bandpowers
      */
     private void calculateBandPowers() {
@@ -338,7 +359,7 @@ public class EEGFragment extends Fragment {
 
         /**
          * Compares this frequency band to another given band
-         * Used in sorting the bands in order of low frequencies to highest frquencies
+         * Used in sorting the bands in order of low frequencies to highest frequencies
          * @param eegBand Frequency band to be compared to
          * @return Integer representing whether it has lower higher or equal frequencies
          */

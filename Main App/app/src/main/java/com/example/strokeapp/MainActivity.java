@@ -12,6 +12,7 @@ import com.example.strokeapp.tests.TestsActivity;
 
 import ai.fritz.core.Fritz;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class MainActivity extends AppCompatActivity {
 
     /**
