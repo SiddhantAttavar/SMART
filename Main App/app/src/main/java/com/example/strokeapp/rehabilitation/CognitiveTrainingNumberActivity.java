@@ -198,7 +198,7 @@ public class CognitiveTrainingNumberActivity extends AppCompatActivity {
         }
         else {
             instructions.append("\nThis test is complete");
-            ResultsActivity.log(this, ResultsActivity.REHABILITATION, "Cognitive Number Test", getString(R.string.cognitive_training_score, totalScore, MAX_SCORE));
+            ResultsActivity.log(this, ResultsActivity.REHABILITATION, getString(R.string.cognitive_number_training), getString(R.string.cognitive_training_score, totalScore, MAX_SCORE));
         }
     }
 

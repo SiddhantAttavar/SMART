@@ -1,15 +1,21 @@
 package com.example.strokeapp.results;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.strokeapp.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings({"FieldCanBeLocal", "ConstantConditions"})
 public class ResultsFragment extends Fragment {
@@ -18,6 +24,10 @@ public class ResultsFragment extends Fragment {
     private View root;
     private CardView cardView;
     private TextView name, id, results;
+    private ImageView imageView;
+
+    //Array of icon drawable ids
+    private Map<String, Integer> drawableId = new HashMap<>();
 
     //Data related variables
     private int type;
@@ -42,25 +52,33 @@ public class ResultsFragment extends Fragment {
         name = root.findViewById(R.id.name);
         id = root.findViewById(R.id.id);
         results = root.findViewById(R.id.results);
+        imageView = root.findViewById(R.id.image_view);
+
+        drawableId.put(getString(R.string.facial_droop), R.drawable.facial_droop);
+        drawableId.put(getString(R.string.arm_weakness), R.drawable.arm_weakness);
+        drawableId.put(getString(R.string.eeg_test), R.drawable.eeg_test);
+        drawableId.put(getString(R.string.eeg_training), R.drawable.eeg_training);
+        drawableId.put(getString(R.string.cognitive_number_training), R.drawable.cognitive_number_training);
+        drawableId.put(getString(R.string.cognitive_stroop_training), R.drawable.cognitive_stroop_training);
 
         if (type == ResultsActivity.TESTS) {
-            cardView.setBackgroundColor(getContext().getResources().getColor(R.color.dark_green));
+            cardView.getBackground().setColorFilter(getResources().getColor(R.color.tests_accent_color), PorterDuff.Mode.SRC_ATOP);
         }
         else {
-            cardView.setBackgroundColor(getContext().getResources().getColor(R.color.dark_blue));
+            cardView.getBackground().setColorFilter(getResources().getColor(R.color.rehabilitation_accent_color), PorterDuff.Mode.SRC_ATOP);
         }
 
-        cardView.setCardElevation(15);
-        cardView.setRadius(10);
         this.name.setText(nameVal);
         this.id.setText(getString(R.string.id, idVal));
         results.setText(getString(R.string.result, result));
+
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), drawableId.get(nameVal), getActivity().getTheme()));
 
         return root;
     }
 
     /**
-     * Sets up the frgament
+     * Sets up the fragment
      * @param type Type of event (TEST/REHABILITATION)
      * @param name Name of event
      * @param id Id of event
@@ -71,23 +89,5 @@ public class ResultsFragment extends Fragment {
         nameVal = name;
         idVal = id;
         this.result = result;
-
-        try {
-            if (type == ResultsActivity.TESTS) {
-                cardView.setBackgroundColor(getContext().getResources().getColor(R.color.dark_green));
-            }
-            else {
-                cardView.setBackgroundColor(getContext().getResources().getColor(R.color.light_blue));
-            }
-
-            cardView.setCardElevation(15);
-            cardView.setRadius(10);
-            this.name.setText(nameVal);
-            this.id.setText(getString(R.string.id, idVal));
-            results.setText(getString(R.string.result, result));
-        }
-        catch (NullPointerException ignored) {
-            //The UI has not been initialized and we need to wait for the on create view function to be called
-        }
     }
 }

@@ -82,7 +82,7 @@ public class ArmWeaknessTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facial_droop_test);
+        setContentView(R.layout.activity_arm_weakness_test);
 
         //Load the interpreter from the /assets/facial_droop_model.tflite file
         try {
@@ -221,7 +221,7 @@ public class ArmWeaknessTestActivity extends AppCompatActivity {
                 }
 
                 result.setText(stringResult);
-                ResultsActivity.log(this, ResultsActivity.TESTS, "Arm Weakness Test", stringResult);
+                ResultsActivity.log(this, ResultsActivity.TESTS, getString(R.string.arm_weakness), stringResult);
             }
             catch (IOException e) {
                 e.printStackTrace();

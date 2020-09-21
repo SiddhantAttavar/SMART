@@ -86,7 +86,8 @@ public class GameLogic extends SurfaceView {
                 //We need the pause the game
                 isPlaying = false;
                 thread.join();
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

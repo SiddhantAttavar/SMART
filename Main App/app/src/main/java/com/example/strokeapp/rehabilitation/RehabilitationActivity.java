@@ -40,7 +40,7 @@ public class RehabilitationActivity extends AppCompatActivity {
         cognitiveNumberTrainingMenuItemFragment.setup(R.drawable.cognitive_number_training, R.string.cognitive_number_training, R.color.rehabilitation_accent_color,
                 () -> startActivity(new Intent(getApplicationContext(), CognitiveTrainingNumberActivity.class)));
 
-        cognitiveStroopTrainingMenuItemFragment.setup(R.drawable.results, R.string.cognitive_stroop_training, R.color.rehabilitation_accent_color,
+        cognitiveStroopTrainingMenuItemFragment.setup(R.drawable.cognitive_stroop_training, R.string.cognitive_stroop_training, R.color.rehabilitation_accent_color,
                 () -> startActivity(new Intent(getApplicationContext(), CognitiveTrainingStroopActivity.class)));
 
         circle.getDrawable().setColorFilter(getResources().getColor(R.color.rehabilitation_accent_color), PorterDuff.Mode.SRC_ATOP);

@@ -172,7 +172,7 @@ public class FacialDroopTestActivity extends AppCompatActivity {
                 }
 
                 result.setText(stringResult);
-                ResultsActivity.log(this, ResultsActivity.TESTS, "Facial Droop Test", stringResult);
+                ResultsActivity.log(this, ResultsActivity.TESTS, getString(R.string.facial_droop), stringResult);
             }
             catch (IOException e) {
                 e.printStackTrace();

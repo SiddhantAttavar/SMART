@@ -3,6 +3,7 @@ package com.example.strokeapp;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
-@SuppressWarnings({"UseCompatLoadingForDrawables", "FieldCanBeLocal"})
+@SuppressWarnings({"UseCompatLoadingForDrawables", "FieldCanBeLocal", "ConstantConditions"})
 public class MenuItemFragment extends Fragment {
 
     //UI elements
@@ -69,6 +70,7 @@ public class MenuItemFragment extends Fragment {
             textView.setTextColor(getResources().getColor(colorId));
             textView.setText(getString(stringId));
             root.setOnClickListener(onClickListener);
+            Log.i("String", getString(stringId));
         }
         catch (NullPointerException | Resources.NotFoundException ignored) {}
     }

@@ -148,7 +148,7 @@ public class CognitiveTrainingStroopActivity extends AppCompatActivity {
         }
         else {
             instructions.append("\nThis test is complete");
-            ResultsActivity.log(this, ResultsActivity.REHABILITATION, "Cognitive Stroop Test", getString(R.string.cognitive_training_score, score,  TOTAL_QUESTIONS));
+            ResultsActivity.log(this, ResultsActivity.REHABILITATION, getString(R.string.cognitive_stroop_training), getString(R.string.cognitive_training_score, score,  TOTAL_QUESTIONS));
         }
     }
 

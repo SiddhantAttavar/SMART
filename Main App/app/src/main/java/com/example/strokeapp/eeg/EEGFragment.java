@@ -45,7 +45,7 @@ public class EEGFragment extends Fragment {
 
     //We define the sampling frequency and the window length for real time analysis
     //and initialize the fftLength
-    private final int samplingFreq = 64;
+    private final int samplingFreq = 256;
     private final int windowLengthTime = 4;
     private int fftLength;
 
@@ -226,7 +226,7 @@ public class EEGFragment extends Fragment {
     }
 
     /**
-     * Processes the EEG Data using FFT to get the frequnecy and ampliudes
+     * Processes the EEG Data using FFT to get the frequency and amplitudes
      * @param data The data to be processed
      */
     private void processData(double[] data) {
@@ -290,10 +290,10 @@ public class EEGFragment extends Fragment {
             if (eegBands[count].low <= frequencies[i]) {
                 //This value comes under the current frequency band
                 //We must add the value here to this band and the total value
-                eegBands[count].val += amplitudes[i];
+                eegBands[count].val += amplitudes[i] * amplitudes[i];
             }
             if (TOTAL.low <= frequencies[i] && TOTAL.high > frequencies[i]) {
-                TOTAL.val += amplitudes[i];
+                TOTAL.val += amplitudes[i] * amplitudes[i];
             }
         }
 
@@ -319,6 +319,15 @@ public class EEGFragment extends Fragment {
         else if (!bufferedData) {
             analyseResults.run();
         }
+    }
+
+
+    public double[] getFFTResults() {
+        return amplitudes;
+    }
+
+    public double[] getFrequencies() {
+        return frequencies;
     }
 
     /**

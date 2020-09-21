@@ -6,19 +6,14 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.example.strokeapp.R;
-import com.example.strokeapp.results.ResultsActivity;
 
 @SuppressLint({"ClickableViewAccessibility", "DefaultLocale"})
 public class EEGGame extends GameLogic {
 
     //The plane object
     public Plane plane;
-
-    //Records the time when the game started
-    private long startTime;
 
     /**
      * Constructor for the game
@@ -60,13 +55,7 @@ public class EEGGame extends GameLogic {
             y = (int) Math.max(0, y - (10 * scaleY));
         }
         else {
-            if (y + (10 * scaleY) < height - plane.height) {
-                //The plane has hit the ground and we need to finish the game
-                pause();
-            }
-            else {
-                y = (int) (y + (10 * scaleY));
-            }
+            y = (int) Math.min(height - plane.height, y + (10 * scaleY));
         }
         plane.getObject().y = y;
     }
@@ -83,26 +72,6 @@ public class EEGGame extends GameLogic {
             bg2.displayBackground(canvas, paint);
             plane.getObject().displayObject(canvas, paint);
             getHolder().unlockCanvasAndPost(canvas);
-        }
-    }
-
-    /**
-     * Called when the user pause/resumes the game by clicking on the pausing/resuming the game or leaving the screen
-     * We log the total time that the user managed to play the game for
-     */
-    @Override
-    public void pause() {
-        super.pause();
-        if (isPlaying) {
-            long currentTime = System.currentTimeMillis();
-            long totalTime = (currentTime - startTime) / 1000;
-
-            String time = String.format("%d min %d  sec", totalTime / 60, totalTime % 60);
-            ResultsActivity.log(getContext(), ResultsActivity.REHABILITATION, "EEG Training", time);
-            Toast.makeText(getContext(), String.format("Game Over. Time: %s", time), Toast.LENGTH_LONG).show();
-        }
-        else {
-            startTime = System.currentTimeMillis();
         }
     }
 

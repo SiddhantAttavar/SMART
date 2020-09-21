@@ -41,7 +41,7 @@ public class BLE {
     private List<String> bluetoothDevices = new ArrayList<>();
     private ArrayAdapter<String> spinnerAdapter;
 
-    //Variables to store the state of the connection and processsing
+    //Variables to store the state of the connection and processing
     public boolean connected = false;
     private boolean runThread = false;
 
