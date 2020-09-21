@@ -10,7 +10,8 @@
 
     <TextView
         style="@style/TitleFormatting"
-        android:text="@string/results"/>
+        android:text="@string/results"
+        android:textColor="@color/results_accent_color"/>
 
     <ScrollView
         style="@style/StandardFormatting"

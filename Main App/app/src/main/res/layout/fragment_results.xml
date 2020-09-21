@@ -18,7 +18,7 @@
         app:cardElevation="15sp"
         app:cardCornerRadius="10dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -35,32 +35,35 @@
                     style="@style/StandardFormatting"
                     android:textSize="15sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/id"
                     style="@style/StandardFormatting"
+                    android:layout_marginTop="0dp"
                     android:textSize="15sp"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"/>
 
                 <TextView
                     android:id="@+id/results"
                     style="@style/StandardFormatting"
+                    android:layout_marginTop="0dp"
                     android:textSize="15sp"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:gravity="center_vertical"/>
             </LinearLayout>
 
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/image_view"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
                 android:layout_margin="16dp"
                 android:scaleType="fitCenter"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

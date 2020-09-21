@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tests.EEGTestActivity"
+    tools:ignore="FragmentTagUsage"
     android:orientation="vertical">
 
     <TextView
@@ -16,13 +17,7 @@
         android:id="@+id/eeg_fragment"
         style="@style/StandardFormatting"
         android:layout_weight="2"
-        android:name="com.example.strokeapp.eeg.EEGFragment"/>
-
-    <Button
-        android:id="@+id/start"
-        style="@style/StandardFormatting"
-        android:text="@string/start"
-        android:onClick="startTest"/>
+        android:name="com.example.strokeapp.eeg.EEGFragment" />
 
     <androidx.cardview.widget.CardView
         style="@style/StandardFormatting"
@@ -34,13 +29,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="8dp">
 
-            <TextView
-                android:id="@+id/timer"
+            <LinearLayout
                 style="@style/StandardFormatting"
-                android:layout_marginTop="0dp"
-                android:text=""/>
+                android:layout_marginTop="0dp">
+
+                <Button
+                    android:id="@+id/start"
+                    style="@style/StandardFormatting"
+                    android:layout_marginBottom="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/start"
+                    android:onClick="startTest"/>
+
+                <TextView
+                    android:id="@+id/timer"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textSize="25sp"
+                    android:layout_margin="8dp"
+                    android:gravity="center"/>
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -55,5 +69,13 @@
     <TextView
         android:id="@+id/result"
         style="@style/StandardFormatting"
-        android:layout_marginBottom="16dp"/>
+        android:layout_weight="0"
+        android:layout_height="wrap_content"/>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/graph"
+        style="@style/StandardFormatting"
+        android:layout_weight="2"
+        android:layout_marginBottom="16dp"
+        android:background="@color/gray"/>
 </LinearLayout>
