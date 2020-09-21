@@ -5,8 +5,8 @@
 
     <uses-feature android:name="android.hardware.camera.any" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -24,11 +24,12 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         <activity
-            android:name=".rehabilitation.CognitiveTrainingActivity"
+            android:name=".rehabilitation.CognitiveTrainingStroopActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".rehabilitation.MotorTrainingActivity"
-            android:screenOrientation="portrait" />
+            android:name=".rehabilitation.CognitiveTrainingNumberActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
         <activity
             android:name=".rehabilitation.EEGTrainingActivity"
             android:screenOrientation="portrait" />
@@ -50,9 +51,12 @@
         <activity
             android:name=".tests.TestsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
