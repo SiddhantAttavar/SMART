@@ -1,8 +1,10 @@
 package com.example.musetest;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +17,9 @@ import org.apache.commons.math3.transform.TransformType;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "SourceLockedOrientationActivity", "DefaultLocale", "SetTextI18n", "PointlessArithmeticExpression"})
 public class MainActivity extends AppCompatActivity {
 
     private MuseFragment museFragment;
@@ -24,14 +27,14 @@ public class MainActivity extends AppCompatActivity {
     private final String EEG_FILE_NAME = "EEGlog.csv";
     private final String FFT_FILE_NAME = "FFTResults.csv";
 
-
-    private int pointer = 0;
+    private int count = 0;
 
     private TextView eegTextView;
     private TextView museTextView;
+    private View ssvepView;
 
     private FileOutputStream eegFOS, fftFos;
-    
+
     private long startTime;
 
     //We define the sampling frequency and the window length for real time analysis
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private int fftLength;
     private double freqDiff = (double) 1 / windowLengthTime;
     private double[] rawData = new double[samplingFreq * windowLengthTime];
+    private final int slidingWindowLength = 1 * samplingFreq;
 
     //We list the entire frequency band of interest (1 - 30 Hz) and a few common frequency bands in EEG-
     //Delta: 1 - 4 Hz; Theta: 4 - 8 Hz; Alpha: 8 - 14 Hz; Beta: 14 - 30 Hz
@@ -66,7 +70,13 @@ public class MainActivity extends AppCompatActivity {
     //We use Apache Commons Math implementation of the FFT
     private FastFourierTransformer FFT = new FastFourierTransformer(DftNormalization.STANDARD);
 
-    @SuppressLint("SourceLockedOrientationActivity")
+    //SSVEP related variables
+    private final int ssvepFrequency = 22;
+    private final long ssvepTime = 1000 / 2 / ssvepFrequency;
+    private boolean ssvepOn = false;
+    private boolean ssverRunning = true;
+    private Thread thread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Initiate the UI
+        ssvepView = findViewById(R.id.ssvep_view);
         eegTextView = findViewById(R.id.eeg_text_view);
         museTextView = findViewById(R.id.muse_text_view);
         museFragment = (MuseFragment) getSupportFragmentManager().findFragmentById(R.id.muse_fragment);
@@ -87,12 +98,31 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        thread = new Thread(this::ssvepSetState);
+        thread.start();
+
         startTime = System.currentTimeMillis();
-//        Handler handler = new Handler(getMainLooper());
-//        handler.postDelayed(() -> {
-//            museFragment.pause(false);
-//            this.runOnUiThread(() -> Toast.makeText(this, "Data collection finished", Toast.LENGTH_LONG).show());
-//        }, TOTAL_TEST_TIME);
+    }
+
+    private void ssvepSetState() {
+        this.runOnUiThread(() -> {
+            if (ssvepOn) {
+                ssvepView.setBackgroundColor(Color.BLUE);
+            }
+            else {
+                ssvepView.setBackgroundColor(Color.WHITE);
+            }
+        });
+        ssvepOn = !ssvepOn;
+        if (ssverRunning) {
+            try {
+                Thread.sleep(ssvepTime);
+                ssvepSetState();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -105,20 +135,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void analyseData() {
+
         double eegVal = museFragment.getEeg();
-        rawData[pointer] = eegVal;
-        if (pointer == rawData.length - 1) {
+        insertAtEnd(rawData, eegVal);
+        count++;
+        if (count == slidingWindowLength) {
+            count = 0;
             processData(rawData);
-            rawData = new double[fftLength];
-            pointer = 0;
+            Log.i("Sliding", Arrays.toString(rawData));
         }
-        else {
-            pointer++;
-        }
+
         log(eegFOS, new double[] {eegVal});
     }
 
-    @SuppressLint("DefaultLocale")
     private void log(FileOutputStream fileOutputStream, double[] msg) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append((double) (System.currentTimeMillis() - startTime) / 1000);
@@ -131,6 +160,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void insertAtEnd(double[] data, double value) {
+        if (data.length - 1 >= 0) System.arraycopy(data, 1, data, 0, data.length - 1);
+        data[data.length - 1] = value;
     }
 
     /**
@@ -174,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             //the Complex number (a + bi) returned in the FFT as sqrt(a * a + b * b)
             //i.e. the distance from the origin
             frequencies[i] = i * freqDiff;
-            amplitudes[i] = real * real + imag * imag;
+            amplitudes[i] = Math.sqrt(real * real + imag * imag);
 
             log(fftFos, new double[] {frequencies[i], amplitudes[i]});
 
@@ -242,7 +276,6 @@ public class MainActivity extends AppCompatActivity {
         return eegBand.val / TOTAL.val;
     }
 
-    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     private void analyseResults() {
         this.runOnUiThread(() -> {
             eegTextView.setText("My Values - \n");
@@ -255,6 +288,22 @@ public class MainActivity extends AppCompatActivity {
             museTextView.setText(String.format("Muse Values - \nDelta: %.4f\nTheta: %.4f\nAlpha: %.4f\nBeta: %.4f",
                     museFragment.delta / sum, museFragment.theta / sum, museFragment.alpha / sum, museFragment.beta / sum));
         });
+    }
+
+    public void setSSVEPRunning(View view) {
+        ssverRunning = !ssverRunning;
+        if (ssverRunning) {
+            thread = new Thread(this::ssvepSetState);
+            thread.start();
+        }
+        else {
+            try {
+                thread.join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
