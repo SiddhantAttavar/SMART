@@ -3,7 +3,6 @@ package com.example.musetest;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,12 +16,14 @@ import org.apache.commons.math3.transform.TransformType;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 @SuppressWarnings({"FieldCanBeLocal", "SourceLockedOrientationActivity", "DefaultLocale", "SetTextI18n", "PointlessArithmeticExpression"})
 public class MainActivity extends AppCompatActivity {
 
+    public MainActivity() {}
+
     private MuseFragment museFragment;
+    private EEGFragment eegFragment;
 
     private final String EEG_FILE_NAME = "EEGlog.csv";
     private final String FFT_FILE_NAME = "FFTResults.csv";
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView eegTextView;
     private TextView museTextView;
+    private TextView myEegTextView;
     private View ssvepView;
 
     private FileOutputStream eegFOS, fftFos;
@@ -55,13 +57,20 @@ public class MainActivity extends AppCompatActivity {
     public static final float BETA_LOW = 14, BETA_HIGH = 30;
 
     //We define an EEG Band for the total frequency band of interest
-    private EEGBand TOTAL = new EEGBand(LOW_PASS, HIGH_PASS, "Total");
+    private EEGFragment.EEGBand TOTAL = new EEGFragment.EEGBand(LOW_PASS, HIGH_PASS, "Total");
 
-    EEGBand[] eegBands = new EEGBand[] {
-            new EEGBand(DELTA_LOW, DELTA_HIGH, "Delta"),
-            new EEGBand(THETA_LOW, THETA_HIGH, "Theta"),
-            new EEGBand(ALPHA_LOW, ALPHA_HIGH, "Alpha"),
-            new EEGBand(BETA_LOW, BETA_HIGH, "Beta")
+    EEGFragment.EEGBand[] eegBands = new EEGFragment.EEGBand[] {
+            new EEGFragment.EEGBand(DELTA_LOW, DELTA_HIGH, "Delta"),
+            new EEGFragment.EEGBand(THETA_LOW, THETA_HIGH, "Theta"),
+            new EEGFragment.EEGBand(ALPHA_LOW, ALPHA_HIGH, "Alpha"),
+            new EEGFragment.EEGBand(BETA_LOW, BETA_HIGH, "Beta")
+    };
+
+    EEGFragment.EEGBand[] eegBands2 = new EEGFragment.EEGBand[] {
+            new EEGFragment.EEGBand(DELTA_LOW, DELTA_HIGH, "Delta"),
+            new EEGFragment.EEGBand(THETA_LOW, THETA_HIGH, "Theta"),
+            new EEGFragment.EEGBand(ALPHA_LOW, ALPHA_HIGH, "Alpha"),
+            new EEGFragment.EEGBand(BETA_LOW, BETA_HIGH, "Beta")
     };
 
     //For storing of the frequencies and amplitudes obtained from the FFT results
@@ -74,8 +83,12 @@ public class MainActivity extends AppCompatActivity {
     private final int ssvepFrequency = 22;
     private final long ssvepTime = 1000 / 2 / ssvepFrequency;
     private boolean ssvepOn = false;
-    private boolean ssverRunning = true;
+    private boolean ssvepRunning = false;
     private Thread thread;
+
+    public MainActivity(EEGFragment eegFragment) {
+        this.eegFragment = eegFragment;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +99,13 @@ public class MainActivity extends AppCompatActivity {
         //Initiate the UI
         ssvepView = findViewById(R.id.ssvep_view);
         eegTextView = findViewById(R.id.eeg_text_view);
+        myEegTextView = findViewById(R.id.my_eeg_text_view);
         museTextView = findViewById(R.id.muse_text_view);
+
+        eegFragment = (EEGFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_fragment);
+        assert eegFragment != null;
+        eegFragment.setup(eegBands2, this::analyseResults);
+
         museFragment = (MuseFragment) getSupportFragmentManager().findFragmentById(R.id.muse_fragment);
         assert museFragment != null;
         museFragment.setDataAnalyzer(this::analyseData);
@@ -114,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         ssvepOn = !ssvepOn;
-        if (ssverRunning) {
+        if (ssvepRunning) {
             try {
                 Thread.sleep(ssvepTime);
                 ssvepSetState();
@@ -141,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
         count++;
         if (count == slidingWindowLength) {
             count = 0;
-            processData(rawData);
-            Log.i("Sliding", Arrays.toString(rawData));
+            new Thread(() -> processData(rawData)).start();
         }
 
         log(eegFOS, new double[] {eegVal});
@@ -232,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Reset all bandpower values to 0
         TOTAL.val = 0;
-        for (EEGBand eegBand: eegBands) {
+        for (EEGFragment.EEGBand eegBand: eegBands) {
             eegBand.val = 0;
         }
 
@@ -272,15 +290,20 @@ public class MainActivity extends AppCompatActivity {
      * @param eegBand Frequency band of interest
      * @return Relative banpower
      */
-    public double getRelativeBandpower(EEGBand eegBand) {
+    public double getRelativeBandpower(EEGFragment.EEGBand eegBand) {
         return eegBand.val / TOTAL.val;
     }
 
     private void analyseResults() {
         this.runOnUiThread(() -> {
-            eegTextView.setText("My Values - \n");
-            for (EEGBand eegBand : eegBands) {
-                eegTextView.append(String.format("%s: %.4f\n", eegBand.bandName, MainActivity.this.getRelativeBandpower(eegBand)));
+            eegTextView.setText("My calculated Values - \n");
+            for (EEGFragment.EEGBand eegBand : eegBands) {
+                eegTextView.append(String.format("%s: %.4f\n", eegBand.bandName, getRelativeBandpower(eegBand)));
+            }
+
+            myEegTextView.setText("Colected EEG Values\n");
+            for (EEGFragment.EEGBand eegBand: eegBands2) {
+                myEegTextView.append(String.format("%s: %.4f\n", eegBand.bandName, eegFragment.getRelativeBandpower(eegBand)));
             }
 
             double sum = museFragment.delta + museFragment.theta + museFragment.alpha + museFragment.beta;
@@ -291,8 +314,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setSSVEPRunning(View view) {
-        ssverRunning = !ssverRunning;
-        if (ssverRunning) {
+        ssvepRunning = !ssvepRunning;
+        if (ssvepRunning) {
             thread = new Thread(this::ssvepSetState);
             thread.start();
         }
@@ -303,42 +326,6 @@ public class MainActivity extends AppCompatActivity {
             catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    /**
-     * Class for defining a frequency band
-     * We can define a frequency band as all the frequencies in a given range
-     */
-    public static class EEGBand implements Comparable<EEGBand> {
-        //Basic properties of the band: min frequency, max frequency, bandpower, name and
-        //buffer for storing temporary EEG values
-        public float low, high;
-        public double val = 0;
-        public String bandName;
-
-        /**
-         * Constructor for the band
-         * Defines the band using min frequency, max frequency and band name
-         * @param low Minimum frequency of interest
-         * @param high Maximum frequency of interest
-         * @param bandName Name of the band
-         */
-        public EEGBand(float low, float high, String bandName) {
-            this.low = low;
-            this.high = high;
-            this.bandName = bandName;
-        }
-
-        /**
-         * Compares this frequency band to another given band
-         * Used in sorting the bands in order of low frequencies to highest frequencies
-         * @param eegBand Frequency band to be compared to
-         * @return Integer representing whether it has lower higher or equal frequencies
-         */
-        @Override
-        public int compareTo(EEGBand eegBand) {
-            return (int) (this.high - eegBand.high + this.low - eegBand.low);
         }
     }
 }

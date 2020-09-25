@@ -11,17 +11,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp">
+        android:orientation="vertical">
 
         <fragment
             android:id="@+id/muse_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.example.musetest.MuseFragment" />
+            android:name="com.example.musetest.MuseFragment"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <fragment
+            android:id="@+id/eeg_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:name="com.example.musetest.EEGFragment"/>
 
         <TextView
             android:id="@+id/muse_text_view"
@@ -34,6 +44,15 @@
 
         <TextView
             android:id="@+id/eeg_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/my_eeg_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
