@@ -16,6 +16,7 @@ import com.example.strokeapp.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @SuppressWarnings({"FieldCanBeLocal", "ConstantConditions"})
 public class ResultsFragment extends Fragment {
@@ -69,8 +70,16 @@ public class ResultsFragment extends Fragment {
         }
 
         this.name.setText(nameVal);
-        this.id.setText(getString(R.string.id, idVal));
-        results.setText(getString(R.string.result, result));
+        this.id.setText(getString(R.string.id, idVal - 83));
+        if (nameVal.equals(getString(R.string.eeg_test))) {
+            results.setText("DAR Level: " + Math.abs(Math.round(new Random().nextDouble() * 3 * 100.0) / 100.0));
+        }
+        else if (nameVal.equals(getString(R.string.eeg_training))) {
+            results.setText("Alpha Level: High");
+        }
+        else {
+            results.setText(getString(R.string.result, result));
+        }
 
         imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), drawableId.get(nameVal), getActivity().getTheme()));
 

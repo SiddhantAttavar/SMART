@@ -5,8 +5,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.strokeapp.rehabilitation.EEGTrainingActivity;
 import com.example.strokeapp.rehabilitation.RehabilitationActivity;
 import com.example.strokeapp.results.ResultsActivity;
+import com.example.strokeapp.tests.EEGTestActivity;
 import com.example.strokeapp.tests.TestsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Set up the fragments
         testsMenuItemFragment.setup(R.drawable.tests, R.string.test, R.color.tests_accent_color,
-                () -> startActivity(new Intent(getApplicationContext(), TestsActivity.class)));
+                () -> startActivity(new Intent(getApplicationContext(), EEGTestActivity.class)));
 
         rehabilitationMenuItemFragment.setup(R.drawable.rehabilitation, R.string.rehabilitation, R.color.rehabilitation_accent_color,
-                () -> startActivity(new Intent(getApplicationContext(), RehabilitationActivity.class)));
+                () -> startActivity(new Intent(getApplicationContext(), EEGTrainingActivity.class)));
 
         resultsMenuItemFragment.setup(R.drawable.results, R.string.results, R.color.results_accent_color,
                 () -> startActivity(new Intent(getApplicationContext(), ResultsActivity.class)));

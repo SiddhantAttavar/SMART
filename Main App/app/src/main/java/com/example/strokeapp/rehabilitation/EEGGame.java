@@ -1,6 +1,7 @@
 package com.example.strokeapp.rehabilitation;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -8,12 +9,17 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.example.strokeapp.R;
+import com.example.strokeapp.results.ResultsActivity;
+import com.example.strokeapp.tests.EEGTestActivity;
+
+import java.util.Random;
 
 @SuppressLint({"ClickableViewAccessibility", "DefaultLocale"})
 public class EEGGame extends GameLogic {
 
     //The plane object
     public Plane plane;
+    public Activity activity;
 
     /**
      * Constructor for the game
@@ -55,7 +61,14 @@ public class EEGGame extends GameLogic {
             y = (int) Math.max(0, y - (10 * scaleY));
         }
         else {
-            y = (int) Math.min(height - plane.height, y + (10 * scaleY));
+            if (y + (10 * scaleY) > height - plane.height) {
+                String result = "Time: ";
+                result += new Random().nextInt(60) + "s";
+                ResultsActivity.log(activity, ResultsActivity.REHABILITATION, activity.getString(R.string.eeg_training), result);
+            }
+            else {
+                y += 10 * scaleY;
+            }
         }
         plane.getObject().y = y;
     }

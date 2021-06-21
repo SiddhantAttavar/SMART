@@ -298,10 +298,10 @@ public class MuseFragment extends Fragment {
      */
     public void receiveMuseDataPacket(final MuseDataPacket p) {
         // valuesSize returns the number of data values contained in the packet.
-        final long n = p.valuesSize();
         switch (p.packetType()) {
             case EEG:
                 eeg = getEegChannelValues(EEGBuffer, p);
+                Log.i("EEG", String.format("%.4f", eeg));
                 dataAnalyzer.run();
                 break;
 

@@ -40,12 +40,12 @@ public class EEGFragment extends Fragment {
     private Runnable analyseResults;
 
     //Limit for the EEG Buffer's and whether we want buffered data for smoother results
-    private final int BUFFER_LIMIT = 16;
+    private final int BUFFER_LIMIT = 32;
     private boolean bufferedData;
 
     //We define the sampling frequency and the window length for real time analysis
     //and initialize the fftLength
-    private final int samplingFreq = 256;
+    private final int samplingFreq = 128;
     private final int windowLengthTime = 4;
     private int fftLength;
 
@@ -251,9 +251,13 @@ public class EEGFragment extends Fragment {
             //i.e. the distance from the origin
             frequencies[i] = i * freqDiff;
             amplitudes[i] = Math.sqrt(real * real + imag * imag);
+
+            if (frequencies[i] > HIGH_PASS) {
+                break;
+            }
         }
 
-        //Calculate the bandpowers of the frquency bands of interest
+        //Calculate the bandpowers of the frequency bands of interest
         calculateBandPowers();
     }
 
@@ -274,7 +278,7 @@ public class EEGFragment extends Fragment {
 
         //The values in the second half of the FFT results are
         //a mirror image of the first half
-        for (int i = 0; i < fftLength / 2; i++) {
+        for (int i = 0; i < fftLength; i++) {
             if (eegBands[count].high < frequencies[i]) {
                 if (bufferedData) {
                     //Add the value to the buffer
@@ -287,13 +291,15 @@ public class EEGFragment extends Fragment {
                     break;
                 }
             }
+
+            double val = amplitudes[i] * amplitudes[i] / freqDiff;
             if (eegBands[count].low <= frequencies[i]) {
                 //This value comes under the current frequency band
                 //We must add the value here to this band and the total value
-                eegBands[count].val += amplitudes[i] * amplitudes[i];
+                eegBands[count].val += val;
             }
             if (TOTAL.low <= frequencies[i] && TOTAL.high > frequencies[i]) {
-                TOTAL.val += amplitudes[i] * amplitudes[i];
+                TOTAL.val += val;
             }
         }
 

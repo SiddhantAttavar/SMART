@@ -49,6 +49,7 @@ public class BLE {
     //Variables for managing the available devices and storing the required one
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice device;
+    private BluetoothGatt bluetoothGatt;
 
     //The Serial port UUID of Bluno is 0000dfb1-0000-1000-8000-00805f9b34fb
     private final UUID SERIAL_UUID = UUID.fromString("0000dfb1-0000-1000-8000-00805f9b34fb");
@@ -116,7 +117,7 @@ public class BLE {
                 //We notify the user and then discover the various services of the device
                 activity.runOnUiThread(() -> Toast.makeText(activity, "Connected to: " + device.getName(), Toast.LENGTH_SHORT).show());
                 activity.runOnUiThread(() -> connect.setText(R.string.disconnect));
-                gatt.discoverServices();
+                Log.i("Discovering Services", String.valueOf(gatt.discoverServices()));
                 connected = true;
                 isScanning = false;
                 scanLeDevice(false);
@@ -137,12 +138,15 @@ public class BLE {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
+            Log.i("BLE", "Services Discovered");
             List<BluetoothGattService> bluetoothGattServices = gatt.getServices();
             for (BluetoothGattService bluetoothGattService: bluetoothGattServices) {
                 Log.i(String.valueOf(bluetoothGattService.describeContents()), bluetoothGattService.getUuid().toString());
 
                 for (BluetoothGattCharacteristic bluetoothGattCharacteristic: bluetoothGattService.getCharacteristics()) {
                     UUID uuid = bluetoothGattCharacteristic.getUuid();
+                    Log.i("BLE", "Debug");
+                    Log.i("UUID", uuid.toString());
                     if (uuid.equals(SERIAL_UUID)) {
                         //We have found the required BLE characteristic and registered it
                         gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true);

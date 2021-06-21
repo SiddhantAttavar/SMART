@@ -36,7 +36,7 @@ import java.io.IOException;
 
 @SuppressWarnings({"FieldCanBeLocal", "deprecation"})
 @SuppressLint("SetTextI18n")
-public class FacialDroopTestActivity extends AppCompatActivity {
+public class    FacialDroopTestActivity extends AppCompatActivity {
 
     //UI elements
     private TextView result;

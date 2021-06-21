@@ -2,7 +2,7 @@
     <string name="app_name">SMART</string>
 
     <!-- App related strings -->
-    <string name="test">Tests</string>
+    <string name="test">Diagnostic Test</string>
     <string name="rehabilitation">Rehabilitation</string>
     <string name="results">Results</string>
 
@@ -52,7 +52,7 @@
     </string-array>
 
     <!-- Results related strings -->
-    <string name="id">ID: %d</string>
+    <string name="id">Patient ID: %d</string>
     <string name="result">Results: %s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.example.musetest.MuseFragment"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"/>
@@ -60,12 +60,21 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"/>
 
+        <TextView
+        android:id="@+id/muse_raw_eeg_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"/>
+
         <View
             android:id="@+id/ssvep_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="250dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"/>
 
@@ -73,6 +82,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pause/Resume"
-            android:onClick="setSSVEPRunning"/>
+            android:onClick="setSSVEPRunning"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
     </LinearLayout>
 </ScrollView>

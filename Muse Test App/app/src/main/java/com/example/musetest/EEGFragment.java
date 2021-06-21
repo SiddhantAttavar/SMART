@@ -1,7 +1,9 @@
 package com.example.musetest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,16 @@ import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings({"FieldCanBeLocal", "unused", "RedundantSuppression", "PointlessArithmeticExpression"})
+@SuppressWarnings({"FieldCanBeLocal", "unused", "RedundantSuppression", "PointlessArithmeticExpression", "ConstantConditions"})
 public class EEGFragment extends Fragment {
+
     //UI elements
     private View root;
     private Button refresh, connect;
@@ -38,7 +44,7 @@ public class EEGFragment extends Fragment {
 
     //We define the sampling frequency and the window length for real time analysis
     //and initialize the fftLength
-    private final int samplingFreq = 220;
+    private final int samplingFreq = 256;
     private final int windowLengthTime = 4;
     private int fftLength;
     private double freqDiff = (double) 1 / windowLengthTime;
@@ -57,10 +63,10 @@ public class EEGFragment extends Fragment {
     //We list the entire frequency band of interest (1 - 30 Hz) and a few common frequency bands in EEG-
     //Delta: 1 - 4 Hz; Theta: 4 - 8 Hz; Alpha: 8 - 14 Hz; Beta: 14 - 30 Hz
     public static final float LOW_PASS = 1f, HIGH_PASS = 30f;
-    public static final float DELTA_LOW = 1f, DELTA_HIGH = 4f;
-    public static final float THETA_LOW = 4f, THETA_HIGH = 8f;
-    public static final float ALPHA_LOW = 8f, ALPHA_HIGH = 14f;
-    public static final float BETA_LOW = 14f, BETA_HIGH = 30f;
+    public static final float DELTA_LOW = 1f, DELTA_HIGH = 3f;
+    public static final float THETA_LOW = 3f, THETA_HIGH = 7f;
+    public static final float ALPHA_LOW = 7f, ALPHA_HIGH = 13f;
+    public static final float BETA_LOW = 13f, BETA_HIGH = 30f;
 
     //We define an EEG Band for the total frequency band of interest
     private EEGBand TOTAL = new EEGBand(LOW_PASS, HIGH_PASS, "Total");
@@ -73,12 +79,30 @@ public class EEGFragment extends Fragment {
     //We use Apache Commons Math implementation of the FFT
     private FastFourierTransformer FFT = new FastFourierTransformer(DftNormalization.STANDARD);
 
+    //Time at which we start capturing data
     private long startTime;
+
+    //Files for logging data
+    private final String RAW_EEG_DATA_FILE_NAME = "RawEEGData.csv";
+    private final String FFT_RESULTS_FILE_NAME = "FFTResults.csv";
+    private final String BANDPOWER_RESULTS_FILE_NAME = "BandpowerResults.csv";
+
+    private FileOutputStream rawEEGDataFileOutputStream;
+    private FileOutputStream fftResultsFileOutputStream;
+    private FileOutputStream bandpowerResultsFileOutputStream;
 
     private Runnable dataAnalyzer = () -> {
         for (String data: ble.getData()) {
             try {
                 double eegVal = Double.parseDouble(data);
+
+                //Log the data in the logging mechanism and file
+                Log.i("Data", String.valueOf(eegVal));
+                /*log(rawEEGDataFileOutputStream, new double[] {
+                        (double) System.currentTimeMillis(),
+                        eegVal
+                });*/
+
                 insertAtEnd(rawData, eegVal);
                 count++;
                 if (count == slidingWindowLength) {
@@ -111,6 +135,16 @@ public class EEGFragment extends Fragment {
         //Instantiate the BLE manager class
         ble = new BLE(activity, spinner, refresh, connect, dataAnalyzer);
         startTime = System.currentTimeMillis();
+
+        //Setup files and file output streams
+        try {
+            rawEEGDataFileOutputStream = getContext().openFileOutput(RAW_EEG_DATA_FILE_NAME, Context.MODE_APPEND);
+            fftResultsFileOutputStream = getContext().openFileOutput(FFT_RESULTS_FILE_NAME, Context.MODE_APPEND);
+            bandpowerResultsFileOutputStream = getContext().openFileOutput(BANDPOWER_RESULTS_FILE_NAME, Context.MODE_APPEND);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return root;
     }
@@ -196,6 +230,8 @@ public class EEGFragment extends Fragment {
 
         //Perform the FFT using Apache Commons Math library
         Complex[] fftResults = FFT.transform(data, TransformType.FORWARD);
+        double time = (double) System.currentTimeMillis();
+
         for (int i = 0; i < fftResults.length; i++) {
             Complex complex = fftResults[i];
             double real = complex.getReal(), imag = complex.getImaginary();
@@ -206,6 +242,13 @@ public class EEGFragment extends Fragment {
             //i.e. the distance from the origin
             frequencies[i] = i * freqDiff;
             amplitudes[i] = Math.sqrt(real * real + imag * imag);
+
+            //Log the results
+            /*log(fftResultsFileOutputStream, new double[] {
+                    time,
+                    frequencies[i],
+                    amplitudes[i]
+            });*/
 
             if (frequencies[i] >= HIGH_PASS) {
                 break;
@@ -238,16 +281,13 @@ public class EEGFragment extends Fragment {
                 break;
             }
 
-            if (eegBands[count].high < frequencies[i]) {
-
+            if (count < eegBands.length && eegBands[count].high < frequencies[i]) {
                 //We need to move to the next frequency band or exit the loop
-                if (count < eegBands.length - 1) {
-                    count++;
-                }
+                count++;
             }
 
             double val = amplitudes[i];
-            if (eegBands[count].low <= frequencies[i]) {
+            if (count < eegBands.length && eegBands[count].low <= frequencies[i]) {
                 //This value comes under the current frequency band
                 //We must add the value here to this band and the total value
                 eegBands[count].val += val;
@@ -257,7 +297,30 @@ public class EEGFragment extends Fragment {
                 TOTAL.val += val;
             }
         }
+
+        double[] data = new double[eegBands.length + 1];
+        data[0] = (double) System.currentTimeMillis();
+        for (int i = 0; i < eegBands.length; i++) {
+            data[i + 1] = eegBands[i].val;
+        }
+        log(bandpowerResultsFileOutputStream, data);
+
         analyseResults.run();
+    }
+
+    private void log(FileOutputStream fileOutputStream, double[] msg) {
+        StringBuilder stringBuilder = new StringBuilder(String.valueOf(msg[0]));
+        for (int i = 1; i < msg.length; i++) {
+            stringBuilder.append(',').append(msg[i]);
+        }
+        stringBuilder.append('\n');
+
+        try {
+            fileOutputStream.write(stringBuilder.toString().getBytes());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -267,6 +330,10 @@ public class EEGFragment extends Fragment {
 
     public double[] getFrequencies() {
         return frequencies;
+    }
+
+    public double[] getRawData() {
+        return rawData;
     }
 
     /**

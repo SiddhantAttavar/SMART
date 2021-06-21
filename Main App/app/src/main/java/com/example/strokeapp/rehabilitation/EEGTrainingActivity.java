@@ -67,6 +67,8 @@ public class EEGTrainingActivity extends FragmentActivity {
 
         handler = new Handler(getMainLooper());
 
+        eegGame.activity = EEGTrainingActivity.this;
+
         eegFragment = (EEGFragment) getSupportFragmentManager().findFragmentById(R.id.eeg_fragment);
         assert eegFragment != null;
         eegFragment.setup(eegBands, true, true, this::analyze);

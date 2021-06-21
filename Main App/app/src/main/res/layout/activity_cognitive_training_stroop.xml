@@ -18,7 +18,7 @@
         android:id="@+id/instructions"
         style="@style/StandardFormatting"
         android:text="@string/cognitive_stroop_training_instructions_name"
-        android:textSize="20sp"/>
+        android:textSize="15sp"/>
 
     <androidx.cardview.widget.CardView
         style="@style/StandardFormatting"

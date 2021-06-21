@@ -28,8 +28,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".rehabilitation.CognitiveTrainingNumberActivity"
-            android:screenOrientation="portrait"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".rehabilitation.EEGTrainingActivity"
             android:screenOrientation="portrait" />
@@ -60,11 +60,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="ai.fritz.core.FritzCustomModelService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
