@@ -1,4 +1,5 @@
-#!pip install tensorflow==2.0
+ # type: ignore
+ # !pip install tensorflow==2.0
 
 from google.colab import drive
 
